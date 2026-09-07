@@ -1,0 +1,31 @@
+start of main file:
+-initiate state of the compiler -> contains details of what details compiler have during run time and compiling
+-initiate return status of main operatin
+-initiate operation code
+-initiate variable pointer for the first file -> how the single pass compiler works is by taking first file then stacking the second and next file on top of it
+(the final resulf of the assembly file would be one big file top to bottom append instead of small modules then linked together like how multi pass compiler did)
+-move argc and argv into new variable so it preserve the state on every loop
+
+-set argc and argv back to the preserved value
+-start the state of the compiler and get all the initial detail template
+-parse the passed argc and argv
+-manage the all args flat array that have been returned
+-set the environment which take the path from os path of environment variable where c standard library headers and precompile binary lives
+(C_INCLUDE_PATH, CPATH, LIBRARY_PATH)
+-set the output target just generate the preprocessor or build elf or exe
+-set the first file pointer into the first file from file path from the passed args array
+-compile the first one then append the next one underneath it
+-emit assembly and binary output
+
+
+the execution args parsing:
+-while the operation args index under the max argc
+-if the user pass @mylist.lst or called response file with format @{filename} then open the filename take the args from there instead from stdin
+(this happens because stdin have limits on how long the args can be passed to an executable and in big project the args can be longer than the limit so to bypass it just make a dedicated file for the long args pass it as file path then the compiler just load it all)
+-append the parsed args into already existing argv pointer and adjust the argc counter (basically bunch of string kinds of dynamic array) (also remember to clean and close opened file)
+-okay if its normal passed arguments just parse it normal string one line
+-turn the string args into a flat array, the way its done was match against the already made table
+
+
+the lexer and parser:
+coming soon
