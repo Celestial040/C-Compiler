@@ -2,7 +2,6 @@
 #define FLAT_ARRAY_HASHMAP
 
 
-#include "file_loader.h"
 #include "status.h"
 #include <string.h>
 #include <stdlib.h>
