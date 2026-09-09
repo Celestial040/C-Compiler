@@ -53,6 +53,4 @@ Status set_symbol_table(HashMap *symbol_table);
 Status set_filestring_to_scan(FileString *filestring);
 
 Identifier scan();
-void printheadtail();
-
 #endif

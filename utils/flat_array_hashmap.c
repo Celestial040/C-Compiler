@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "xxhash.h"
 
 
 typedef struct BucketNode{
@@ -25,15 +26,6 @@ typedef struct FoundStringMatch {
     BucketNode *node_pointer;
 } FoundStringMatch;
 
-
-
-uint64_t hash_string(const char* str, size_t len) {
-    uint64_t hash_value = 5381;
-    for (size_t i = 0; i < len; i++) {
-        hash_value = hash_value * 33 + (unsigned char)str[i];
-    }
-    return hash_value;
-}
 
 Status create_hashmap(HashMap *hashmap, size_t bucket_count) {
     BucketNode *allocated_bucket = (BucketNode *) malloc(sizeof(BucketNode) * bucket_count);
@@ -71,7 +63,7 @@ Status insert_item(HashMap *hashmap, char *string, size_t string_length) {
     if (hashmap->current_bucket_count + 1 == hashmap->max_bucket_count) {
         return ARRAY_FULL;
     }
-    uint64_t hash_result = hash_string(string, string_length);
+    uint64_t hash_result = xxh64(string, string_length,0);
 
     BucketNode new_node;
     new_node.hash = hash_result;
@@ -103,7 +95,7 @@ Status insert_item(HashMap *hashmap, char *string, size_t string_length) {
 }
 
 Status check_item(HashMap *hashmap, char *string, size_t string_length) {
-    uint64_t hash_result = hash_string(string, string_length);
+    uint64_t hash_result = xxh64(string, string_length,0);
 
     size_t target_index = hash_result % hashmap->max_bucket_count;
     uint64_t hash_offset = 0;
@@ -122,7 +114,7 @@ Status check_item(HashMap *hashmap, char *string, size_t string_length) {
 }
 
 FoundStringMatch find_item(HashMap *hashmap, char *string, size_t string_length) {
-    uint64_t hash_result = hash_string(string, string_length);
+    uint64_t hash_result = xxh64(string, string_length,0);
 
     size_t target_index = hash_result % hashmap->max_bucket_count;
     uint64_t hash_offset = 0;

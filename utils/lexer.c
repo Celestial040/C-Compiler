@@ -139,7 +139,3 @@ Identifier scan() {
     return (Identifier) {.type = UNKNOWN_IDENTIFIER, .value = NULL, .value_length = 0};
 
 }
-
-void printheadtail() {
-    printf("%ld , %ld \n", head, tail);
-}
