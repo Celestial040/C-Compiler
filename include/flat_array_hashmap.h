@@ -2,6 +2,7 @@
 #define FLAT_ARRAY_HASHMAP
 
 
+#include "file_loader.h"
 #include "status.h"
 #include <string.h>
 #include <stdlib.h>
@@ -18,7 +19,8 @@ typedef struct BucketNode{
 
 typedef struct HashMap {
     BucketNode *bucketarray;
-    size_t bucket_count;
+    size_t max_bucket_count;
+    size_t current_bucket_count;
 } HashMap;
 
 typedef struct FoundStringMatch {

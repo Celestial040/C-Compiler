@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "xxhash.h"
+#include "file_loader.h"
 
 
 typedef struct BucketNode{
@@ -33,6 +34,7 @@ Status create_hashmap(HashMap *hashmap, size_t bucket_count) {
         return ALLOCATION_ERROR;
     }
     hashmap->max_bucket_count = bucket_count;
+    hashmap->current_bucket_count = 0;
     hashmap->bucketarray = allocated_bucket;
 
     for (size_t i = 0; i < bucket_count; i++) {
@@ -65,16 +67,19 @@ Status insert_item(HashMap *hashmap, char *string, size_t string_length) {
     }
     uint64_t hash_result = xxh64(string, string_length,0);
 
+
     BucketNode new_node;
     new_node.hash = hash_result;
     new_node.string_pointer = string;
     new_node.string_length = string_length;
     new_node.probe_count = 0;
 
-
     size_t target_index = hash_result % hashmap->max_bucket_count;
+
     uint64_t hash_offset = 0;
     BucketNode *target_bucket = hashmap->bucketarray + target_index;
+
+
 
     while (target_bucket->string_pointer != NULL){
         if (compare_node(new_node.string_pointer, new_node.string_length,target_bucket->string_pointer, target_bucket->string_length)) {
@@ -85,12 +90,15 @@ Status insert_item(HashMap *hashmap, char *string, size_t string_length) {
         }
         hash_offset++;
         new_node.probe_count++;
-        target_index = (hash_result + hash_offset) % hashmap->max_bucket_count;
+        target_index = (new_node.hash + hash_offset) % hashmap->max_bucket_count;
         target_bucket = hashmap->bucketarray + target_index;
     }
 
+
+
     memcpy(target_bucket,  &new_node, sizeof(BucketNode));
     hashmap->current_bucket_count++;
+
     return NO_ERROR;
 }
 

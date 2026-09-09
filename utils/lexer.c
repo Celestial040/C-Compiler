@@ -127,7 +127,6 @@ Identifier scan() {
                 return specific_case(*current_char);
             }
         }
-
         else {
             if (!alphanum_state) {
                 alphanum_state = true;
@@ -136,6 +135,7 @@ Identifier scan() {
             head++;
         }
     }
+
     return (Identifier) {.type = UNKNOWN_IDENTIFIER, .value = NULL, .value_length = 0};
 
 }

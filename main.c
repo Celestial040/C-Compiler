@@ -2,6 +2,7 @@
 #include "status.h"
 #include "file_loader.h"
 #include "string_arena_allocator.h"
+#include <stdio.h>
 
 
 int main() {
@@ -19,8 +20,10 @@ int main() {
         return 1;
     }
 
-    pass_string_arena(&string_arena);
     pass_loaded_file(&loaded_file_string);
+    pass_string_arena(&string_arena);
     parser_start();
+    printf("\n");
+
 
 }

@@ -8,13 +8,18 @@
 
 Status status;
 
-StringArenaMemory *arena;
-FileString *target_file;
+
+StringArenaMemory *arena = NULL;
+FileString *target_file = NULL;
 HashMap type_table;
 HashMap symbol_table;
 
+
+
+
 void pass_string_arena(StringArenaMemory *string_arena) {
     arena = string_arena;
+
 }
 
 void pass_loaded_file(FileString *file_string) {
@@ -26,6 +31,7 @@ Status type_table_init() {
     char *primitive_type[6] = {"char", "short", "int", "long", "float", "double"};
     size_t primitive_type_length[6] = {4,5,3,4,5,6};
     StringArenaPointer primitive_type_string[6];
+
 
     for (size_t i = 0; i<6; i++) {
         primitive_type_string[i] = insert_string_to_arena(arena, primitive_type[i], primitive_type_length[i]);
@@ -44,6 +50,7 @@ Status type_table_init() {
 
 Status parser_start() {
 
+
     status = create_hashmap(&type_table, 12);
     if (status != NO_ERROR) {
         return status;
@@ -56,6 +63,8 @@ Status parser_start() {
         return status;
     };
 
+
+
     status = set_type_table(&type_table);
     if (status != NO_ERROR) {
         return status;
@@ -64,6 +73,7 @@ Status parser_start() {
     if (status != NO_ERROR) {
         return status;
     }
+
     status = set_filestring_to_scan(target_file);
     if (status != NO_ERROR) {
         return status;
