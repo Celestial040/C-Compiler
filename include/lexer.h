@@ -2,7 +2,7 @@
 #define LEXER
 
 #include "file_loader.h"
-#include "hashmap.h"
+#include "flat_array_hashmap.h"
 #include "status.h"
 
 typedef enum Identifier_Type {
@@ -48,10 +48,10 @@ typedef struct Identifier {
 
 
 
-Status start_filestring_scan(Filestring *filestring);
-Status set_type_table(Hashmap *type_table);
-Status set_name_table(Hashmap *name_table);
-Status set_filestring_scan(Filestring *filestring);
+Status set_type_table(HashMap *type_table);
+Status set_symbol_table(HashMap *symbol_table);
+Status set_filestring_to_scan(FileString *filestring);
+
 Identifier scan();
 void printheadtail();
 

@@ -1,6 +1,6 @@
 #include "char_manip.h"
 #include "file_loader.h"
-#include "hashmap.h"
+#include "flat_array_hashmap.h"
 #include "status.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -49,14 +49,14 @@ typedef struct Identifier {
 }Identifier ;
 
 
-static Filestring *current_file;
+static FileString *current_file;
 static size_t head = 0;
 static size_t tail = 0;
-static Hashmap *type_lookup_table;
-static Hashmap *name_lookup_table;
+static HashMap *type_lookup_table;
+static HashMap *symbol_lookup_table;
 static bool alphanum_state = false;
 
-Status set_type_table(Hashmap *type_table) {
+Status set_type_table(HashMap *type_table) {
     if (type_table == NULL) {
         return NULL_POINTER;
     }
@@ -65,16 +65,16 @@ Status set_type_table(Hashmap *type_table) {
     return NO_ERROR;
 }
 
-Status set_name_table(Hashmap *name_table) {
-    if (name_table == NULL) {
+Status set_symbol_table(HashMap *symbol_table) {
+    if (symbol_table == NULL) {
         return NULL_POINTER;
     }
 
-    name_lookup_table = name_table;
+    symbol_lookup_table = symbol_table;
     return NO_ERROR;
 }
 
-Status set_filestring_scan(Filestring *filestring){
+Status set_filestring_to_scan(FileString *filestring){
     if (filestring == NULL) {
         return NULL_POINTER;
     }
@@ -102,20 +102,20 @@ Identifier scan() {
 
     while (head < current_file->length) {
         char *current_char = current_file->start + head;
-        // printf("%ld \n",head);
         if (!is_alphabet_numeric(*current_char)) {
             if (alphanum_state) {
                 alphanum_state = false;
-                Status status = check_if_exist(type_lookup_table, current_file->start+tail, head - tail);
+                Status status = check_item(type_lookup_table, current_file->start+tail, head - tail);
 
                 if (status == NO_ERROR) {
                     return (Identifier) {.type = TYPE, .value=current_file->start+tail, head - tail};
                 }
 
-                status = check_if_exist(name_lookup_table, current_file->start+tail, head-tail);
+                status = check_item(symbol_lookup_table, current_file->start+tail, head-tail);
                 if (status == NO_ERROR) {
                     return (Identifier) {.type = NAME, .value=current_file->start+tail, head-tail};
-                } else {
+                }
+                else {
                     return (Identifier) {.type = NEW_NAME, .value=current_file->start+tail, head - tail};
                 }
             }

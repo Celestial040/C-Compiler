@@ -1,4 +1,4 @@
-SRCS := main.c utils/hashmap.c utils/file_loader.c utils/parser.c utils/lexer.c
+SRCS := main.c utils/flat_array_hashmap.c utils/string_arena_allocator.c utils/file_loader.c utils/parser.c utils/lexer.c
 HEADERS := $(wildcard include/*.h)
 INC_FLAGS := -Iinclude
 
