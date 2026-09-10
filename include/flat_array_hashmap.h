@@ -1,5 +1,5 @@
-#ifndef FLAT_ARRAY_HASHMAP
-#define FLAT_ARRAY_HASHMAP
+#ifndef FLAT_ARRAY_HASHMAP_H
+#define FLAT_ARRAY_HASHMAP_H
 
 
 #include "status.h"
@@ -30,8 +30,8 @@ typedef struct FoundStringMatch {
 
 uint64_t hash_string(const char* str, size_t len);
 Status create_hashmap(HashMap *hashmap, size_t bucket_count);
-Status insert_item(HashMap *hashmap, char *string, size_t string_length);
-Status check_item(HashMap *hashmap, char *string, size_t string_length);
-FoundStringMatch find_item(HashMap *hashmap, char *string, size_t string_length);
+Status insert_item(HashMap *hashmap, const char *string, size_t string_length);
+Status check_item(HashMap *hashmap, const char *string, size_t string_length);
+FoundStringMatch find_item(HashMap *hashmap, const char *string, size_t string_length);
 
 #endif

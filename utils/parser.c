@@ -6,31 +6,27 @@
 #include <stdio.h>
 #include "lexer.h"
 
-Status status;
-
+typedef struct TablesGroup {
+    HashMap keyword_table;
+    HashMap operator_table;
+    HashMap punctuation_table;
+    HashMap symbol_table;
+} TablesGroup;
 
 StringArenaMemory *arena = NULL;
 FileString *target_file = NULL;
-HashMap type_table;
-HashMap symbol_table;
-
-
-
+TablesGroup tables_group;
+Status status = 0;
 
 void pass_string_arena(StringArenaMemory *string_arena) {
     arena = string_arena;
-
 }
 
 void pass_loaded_file(FileString *file_string) {
     target_file = file_string;
 }
 
-Status type_table_init() {
-
-    char *primitive_type[6] = {"char", "short", "int", "long", "float", "double"};
-    size_t primitive_type_length[6] = {4,5,3,4,5,6};
-    StringArenaPointer primitive_type_string[6];
+Status seed_keyword_table() {
 
     static const char *keyword_strings[] = {
         "auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else", "enum",
@@ -42,6 +38,14 @@ Status type_table_init() {
         4, 5, 4, 4, 5, 8, 7, 2, 6, 4, 4, 6, 5, 3, 4, 2, 3, 4, 8, 6, 5, 6, 6, 6, 6, 6, 7, 5, 8, 4, 8, 5, 6, 5,
     };
 
+    for (size_t i = 0; i < 34; i++) {
+        status = insert_item(&tables_group.keyword_table, keyword_strings[i], keyword_lengths[i]);
+        if (status != 0) return status;
+    }
+
+    return NO_ERROR;
+}
+Status seed_operator_table() {
 
     static const char *operator_strings[] = {
         "+", "-", "*", "/", "%", "++", "--", "=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=",
@@ -52,6 +56,15 @@ Status type_table_init() {
         1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1,
     };
 
+    for (size_t i = 0; i < 36; i++) {
+        status = insert_item(&tables_group.operator_table, operator_strings[i], operator_lengths[i]);
+        if (status != 0) return status;
+    }
+
+    return NO_ERROR;
+}
+Status seed_punctuation_table() {
+
     static const char *punctuation_strings[] = {
         "(", ")", "[", "]", "{", "}", ",", ";", ":", "...", "#", "##",
     };
@@ -60,52 +73,42 @@ Status type_table_init() {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 2,
     };
 
-
-    for (size_t i = 0; i<6; i++) {
-        primitive_type_string[i] = insert_string_to_arena(arena, primitive_type[i], primitive_type_length[i]);
-        if (primitive_type_string[i].status != NO_ERROR) {
-            return primitive_type_string[i].status;
-        }
-    }
-
-    for (size_t i = 0; i<6; i++) {
-        insert_item(&type_table, primitive_type_string[i].string_pointer, primitive_type_string[i].string_length);
+    for (size_t i = 0; i < 12; i++) {
+        status = insert_item(&tables_group.punctuation_table, punctuation_strings[i], punctuation_lengths[i]);
+        if (status != 0) return status;
     }
 
     return NO_ERROR;
 }
 
+Status tables_init() {
+    Status table_creation_status[3] = { seed_keyword_table(), seed_operator_table(), seed_punctuation_table()};
+    for (size_t i = 0; i < 3; i++) if (table_creation_status[i] != 0) return table_creation_status[i];
+    return NO_ERROR;
+}
+
 
 Status parser_start() {
+    Status tables_status[4];
 
+    tables_status[0] = create_hashmap(&tables_group.keyword_table, 34*2);
+    tables_status[1] = create_hashmap(&tables_group.operator_table, 36*2);
+    tables_status[2] = create_hashmap(&tables_group.punctuation_table, 12*2);
+    tables_status[3] = create_hashmap(&tables_group.symbol_table, 2048*2);
 
-    status = create_hashmap(&type_table, 12);
-    if (status != NO_ERROR) {
-        return status;
-    };
-
-    type_table_init();
-
-    status = create_hashmap(&symbol_table, 2048);
-    if (status != NO_ERROR) {
-        return status;
-    };
-
-
-
-    status = set_type_table(&type_table);
-    if (status != NO_ERROR) {
-        return status;
+    for(size_t i = 0; i < 4; i++) {
+        if (tables_status[i] != NO_ERROR) {
+            return tables_status[i];
+        };
     }
-    status = set_symbol_table(&symbol_table);
-    if (status != NO_ERROR) {
-        return status;
-    }
+
+    status = tables_init();
+    if (status != 0) return status;
+
+
 
     status = set_filestring_to_scan(target_file);
-    if (status != NO_ERROR) {
-        return status;
-    }
+    if (status != NO_ERROR) return status;
 
     // Identifier result;
     // result = scan();

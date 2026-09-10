@@ -1,56 +1,132 @@
-#ifndef LEXER
-#define LEXER
+#ifndef LEXER_H
+#define LEXER_H
 
 #include "file_loader.h"
-#include "flat_array_hashmap.h"
+#include "parser.h"
 #include "status.h"
 
-typedef enum Identifier_Type {
-    TYPE,
-    NAME,
-    NEW_NAME,
-    ASSIGNMENT,
-    SEMICOLON,
-    ADD,
-    SUB,
-    DIV,
-    MUL,
-    STAR,
-    POINT,
-    ARROW,
-    VALUE,
-    IF_STATEMENT,
-    ELSE_STATEMENT,
-    ELSE_IF_STATEMENT,
-    TYPEDEF,
+
+typedef enum TokenCategory {
+    KEYWORD,
+    OPERATOR,
+    PUNCTUATION,
+    IDENTIFIER,
+    LITERAL,
+} TokenCategory;
+
+typedef enum Keyword {
+    AUTO,
+    BREAK,
+    CASE,
+    CHAR,
+    CONST,
+    CONTINUE,
+    DEFAULT,
+    DO,
+    DOUBLE,
+    ELSE,
     ENUM,
+    EXTERN,
+    FLOAT,
+    FOR,
+    GOTO,
+    IF,
+    INT,
+    LONG,
+    REGISTER,
+    RETURN,
+    SHORT,
+    SIGNED,
+    SIZEOF,
+    STATIC,
     STRUCT,
+    SWITCH,
+    TYPEDEF,
+    UNION,
+    UNSIGNED,
+    VOID,
+    VOLATILE,
+    WHILE,
+    INLINE,
+    BOOL,
+    UNKNOWN_KEYWORD,
+} Keyword;
+
+typedef enum Operator {
+    PLUS,
+    MINUS,
+    STAR,
+    SLASH,
+    MOD,
+    INCREMENT,
+    DECREMENT,
+    ASSIGN,
+    PLUS_ASSIGN,
+    MINUS_ASSIGN,
+    STAR_ASSIGN,
+    SLASH_ASSIGN,
+    MOD_ASSIGN,
+    AND_ASSIGN,
+    OR_ASSIGN,
+    XOR_ASSIGN,
+    LEFT_SHIFT_ASSIGN,
+    RIGHT_SHIFT_ASSIGN,
+    EQUAL,
+    NOT_EQUAL,
     LESS_THAN,
     MORE_THAN,
-    EQUAL,
-    RETURN,
-    SINGLE_QUOTATION,
-    DOUBLE_QUOTATION,
+    LESS_EQUAL,
+    MORE_EQUAL,
+    LOGICAL_AND,
+    LOGICAL_OR,
+    LOGICAL_NOT,
+    BIT_AND,
+    BIT_OR,
+    BIT_XOR,
+    BIT_NOT,
+    LEFT_SHIFT,
+    RIGHT_SHIFT,
+    ARROW,
+    DOT,
+    QUESTION,
+    UNKNOWN_OPERATOR,
+} Operator;
+
+typedef enum Punctuation {
     OPEN_ROUND_BRACKET,
     CLOSE_ROUND_BRACKET,
     OPEN_SQUARE_BRACKET,
     CLOSE_SQUARE_BRACKET,
     OPEN_CURLY_BRACKET,
     CLOSE_CURLY_BRACKET,
-    UNKNOWN_IDENTIFIER,
-} Identifier_Type;
+    COMMA,
+    SEMICOLON,
+    COLON,
+    ELLIPSIS,
+    HASH,
+    DOUBLE_HASH,
+    UNKNOWN_PUNCTUATION,
+} Punctuation;
 
-typedef struct Identifier {
-    Identifier_Type type;
-    char *value;
-    size_t value_length;
-}Identifier ;
+typedef struct Token {
+    TokenCategory category;
+    union {
+        Keyword keyword;
+        Operator operator;
+        Punctuation punctuation;
+        struct {
+            char *value;
+            size_t value_length;
+        } identifier;
+        struct {
+            char *value;
+            size_t value_length;
+        } literal;
+    } data;
+} Token;
 
 
-
-Status set_type_table(HashMap *type_table);
-Status set_symbol_table(HashMap *symbol_table);
+void set_working_tables(TablesGroup *type_tables);
 Status set_filestring_to_scan(FileString *filestring);
 
-Identifier scan();
 #endif

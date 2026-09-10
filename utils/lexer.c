@@ -6,18 +6,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
-
-typedef enum Identifier_Type {
-
-    UNKNOWN_IDENTIFIER,
-} Identifier_Type;
-
-typedef struct Identifier {
-    Identifier_Type type;
-    char *value;
-    size_t value_length;
-}Identifier ;
-
+#include "parser.h"
 
 typedef enum TokenCategory {
     KEYWORD,
@@ -64,7 +53,6 @@ typedef enum Keyword {
     BOOL,
     UNKNOWN_KEYWORD,
 } Keyword;
-
 typedef enum Operator {
     PLUS,
     MINUS,
@@ -104,7 +92,6 @@ typedef enum Operator {
     QUESTION,
     UNKNOWN_OPERATOR,
 } Operator;
-
 typedef enum Punctuation {
     OPEN_ROUND_BRACKET,
     CLOSE_ROUND_BRACKET,
@@ -120,6 +107,23 @@ typedef enum Punctuation {
     DOUBLE_HASH,
     UNKNOWN_PUNCTUATION,
 } Punctuation;
+
+typedef struct Token {
+    TokenCategory category;
+    union {
+        Keyword keyword;
+        Operator operator;
+        Punctuation punctuation;
+        struct {
+            char *value;
+            size_t value_length;
+        } identifier;
+        struct {
+            char *value;
+            size_t value_length;
+        } literal;
+    } data;
+} Token;
 
 
 
@@ -140,26 +144,11 @@ typedef enum Punctuation {
 static FileString *current_file;
 static size_t head = 0;
 static size_t tail = 0;
-static HashMap *type_lookup_table;
-static HashMap *symbol_lookup_table;
+static TablesGroup *tables;
 static bool alphanum_state = false;
 
-Status set_type_table(HashMap *type_table) {
-    if (type_table == NULL) {
-        return NULL_POINTER;
-    }
-
-    type_lookup_table = type_table;
-    return NO_ERROR;
-}
-
-Status set_symbol_table(HashMap *symbol_table) {
-    if (symbol_table == NULL) {
-        return NULL_POINTER;
-    }
-
-    symbol_lookup_table = symbol_table;
-    return NO_ERROR;
+void set_working_tables(TablesGroup *type_tables) {
+    tables = type_tables;
 }
 
 Status set_filestring_to_scan(FileString *filestring){

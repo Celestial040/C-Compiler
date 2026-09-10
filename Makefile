@@ -11,6 +11,3 @@ release: $(SRCS) $(HEADERS)
 
 debug: $(SRCS) $(HEADERS)
 	gcc $(INC_FLAGS) -g $(SRCS) -o ./output/main_debug
-
-basic: $(SRCS) $(HEADERS)
-	gcc -O0 -march=native $(INC_FLAGS) $(SRCS) -o ./output/main_half

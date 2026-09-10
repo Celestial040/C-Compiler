@@ -1,5 +1,5 @@
-#ifndef STRING_ARENA_ALLOCATOR
-#define STRING_ARENA_ALLOCATOR
+#ifndef STRING_ARENA_ALLOCATOR_H
+#define STRING_ARENA_ALLOCATOR_H
 
 #include "status.h"
 #include <stddef.h>

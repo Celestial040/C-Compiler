@@ -1,5 +1,5 @@
-#ifndef FILE_LOADER
-#define FILE_LOADER
+#ifndef FILE_LOADER_H
+#define FILE_LOADER_H
 
 #include "status.h"
 

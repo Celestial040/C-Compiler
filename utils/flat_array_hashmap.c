@@ -6,12 +6,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "xxhash.h"
-#include "file_loader.h"
-
 
 typedef struct BucketNode{
     uint64_t hash;
-    char *string_pointer;
+    const char *string_pointer;
     size_t string_length;
     size_t probe_count;
 }BucketNode;
@@ -54,19 +52,18 @@ void swap_node_value(BucketNode *dest, BucketNode *src) {
     memcpy(src, &tempNode, sizeof(BucketNode));
 }
 
-bool compare_node(char *string1, size_t string1_length, char *string2, size_t string2_length) {
+bool compare_node(const char *string1, size_t string1_length,const char *string2, size_t string2_length) {
     if (string1_length == string2_length && memcmp(string1, string2, string1_length) == 0) {
         return true;
     }
     return false;
 }
 
-Status insert_item(HashMap *hashmap, char *string, size_t string_length) {
+Status insert_item(HashMap *hashmap, const char *string, const size_t string_length) {
     if (hashmap->current_bucket_count + 1 == hashmap->max_bucket_count) {
         return ARRAY_FULL;
     }
     uint64_t hash_result = xxh64(string, string_length,0);
-
 
     BucketNode new_node;
     new_node.hash = hash_result;
@@ -78,7 +75,6 @@ Status insert_item(HashMap *hashmap, char *string, size_t string_length) {
 
     uint64_t hash_offset = 0;
     BucketNode *target_bucket = hashmap->bucketarray + target_index;
-
 
 
     while (target_bucket->string_pointer != NULL){

@@ -1,5 +1,5 @@
-#ifndef XXHASH
-#define XXHASH
+#ifndef XXHASH_H
+#define XXHASH_H
 
 #include <stddef.h>
 #include <stdint.h>

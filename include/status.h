@@ -1,5 +1,5 @@
-#ifndef STATUS
-#define STATUS
+#ifndef STATUS_H
+#define STATUS_H
 #include <stdio.h>
 
 typedef enum Status {

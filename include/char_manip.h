@@ -1,5 +1,5 @@
-#ifndef CHAR_MANIP
-#define CHAR_MANIP
+#ifndef CHAR_MANIP_H
+#define CHAR_MANIP_H
 
 #include <stdbool.h>
 #include <stddef.h>
