@@ -14,11 +14,11 @@ int main() {
     status = read_file("./test.c", &loaded_file_string);
     if (status != 0) goto error_exit;
 
-    pass_loaded_file(&loaded_file_string);
-    pass_string_arena(&string_arena);
-
-    status = parser_start();
+    status = parser_start(&string_arena,&loaded_file_string);
     if (status != 0) goto error_exit;
+
+    status_print(status);
+    return status;
 
     error_exit:
     status_print(status);

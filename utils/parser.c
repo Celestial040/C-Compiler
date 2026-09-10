@@ -1,3 +1,4 @@
+#include "parser.h"
 #include "file_loader.h"
 #include "flat_array_hashmap.h"
 #include "status.h"
@@ -7,20 +8,11 @@
 #include "lexer.h"
 
 
-StringArenaMemory *arena = NULL;
-FileString *target_file = NULL;
-TablesGroup tables_group;
-Status status = 0;
 
-void pass_string_arena(StringArenaMemory *string_arena) {
-    arena = string_arena;
-}
 
-void pass_loaded_file(FileString *file_string) {
-    target_file = file_string;
-}
+Status seed_keyword_table(HashMap *keyword_table) {
 
-Status seed_keyword_table() {
+    Status status;
 
     static const char *keyword_strings[] = {
         "auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else", "enum",
@@ -33,13 +25,16 @@ Status seed_keyword_table() {
     };
 
     for (size_t i = 0; i < 34; i++) {
-        status = insert_item(&tables_group.keyword_table, keyword_strings[i], keyword_lengths[i]);
+        status = insert_item(keyword_table, keyword_strings[i], keyword_lengths[i]);
         if (status != 0) return status;
     }
 
     return NO_ERROR;
 }
-Status seed_operator_table() {
+
+Status seed_operator_table(HashMap *operator_table) {
+
+    Status status;
 
     static const char *operator_strings[] = {
         "+", "-", "*", "/", "%", "++", "--", "=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=",
@@ -51,13 +46,16 @@ Status seed_operator_table() {
     };
 
     for (size_t i = 0; i < 36; i++) {
-        status = insert_item(&tables_group.operator_table, operator_strings[i], operator_lengths[i]);
+        status = insert_item(operator_table, operator_strings[i], operator_lengths[i]);
         if (status != 0) return status;
     }
 
     return NO_ERROR;
 }
-Status seed_punctuation_table() {
+
+Status seed_punctuation_table(HashMap *punctuation_table) {
+
+    Status status;
 
     static const char *punctuation_strings[] = {
         "(", ")", "[", "]", "{", "}", ",", ";", ":", "...", "#", "##",
@@ -68,21 +66,26 @@ Status seed_punctuation_table() {
     };
 
     for (size_t i = 0; i < 12; i++) {
-        status = insert_item(&tables_group.punctuation_table, punctuation_strings[i], punctuation_lengths[i]);
+        status = insert_item(punctuation_table, punctuation_strings[i], punctuation_lengths[i]);
         if (status != 0) return status;
     }
 
     return NO_ERROR;
 }
 
-Status tables_init() {
-    Status table_creation_status[3] = { seed_keyword_table(), seed_operator_table(), seed_punctuation_table()};
+Status tables_init(TablesGroup *tables_group) {
+    Status table_creation_status[3] = { seed_keyword_table(&tables_group->keyword_table),
+                                        seed_operator_table(&tables_group->operator_table),
+                                        seed_punctuation_table(&tables_group->punctuation_table)};
+
     for (size_t i = 0; i < 3; i++) if (table_creation_status[i] != 0) return table_creation_status[i];
     return NO_ERROR;
 }
 
 
-Status parser_start() {
+Status parser_start(StringArenaMemory *string_arena, FileString *file_string) {
+    TablesGroup tables_group;
+    tables_group.string_arena = string_arena;
     Status tables_status[4];
 
     tables_status[0] = create_hashmap(&tables_group.keyword_table, 34*2);
@@ -96,13 +99,14 @@ Status parser_start() {
         };
     }
 
-    status = tables_init();
+    Status status;
+    status = tables_init(&tables_group);
     if (status != 0) return status;
 
 
 
-    status = set_filestring_to_scan(target_file);
-    if (status != NO_ERROR) return status;
+    // status = set_filestring_to_scan(target_file);
+    // if (status != NO_ERROR) return status;
 
     // Identifier result;
     // result = scan();

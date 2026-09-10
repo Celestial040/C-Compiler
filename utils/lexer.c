@@ -1,6 +1,6 @@
-// #include "char_manip.h"
+#include "char_manip.h"
 #include "file_loader.h"
-// #include "flat_array_hashmap.h"
+#include "flat_array_hashmap.h"
 #include "status.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -24,29 +24,16 @@
 //     }
 // }
 
-static FileString *current_file;
-static size_t head = 0;
-static size_t tail = 0;
-static TablesGroup *tables;
-static bool alphanum_state = false;
 
-void set_working_tables(TablesGroup *type_tables) {
-    tables = type_tables;
+void scan(TablesGroup *working_table, FileString *file_string) {
+    static size_t head = 0;
+    static size_t tail = 0;
+    static bool alphanum_state = false;
 }
 
-Status set_filestring_to_scan(FileString *filestring){
-    if (filestring == NULL) {
-        return NULL_POINTER;
-    }
-    current_file = filestring;
-
-    return NO_ERROR;
-};
-
-
-
 // Identifier scan() {
-
+    // static size_t head = 0;
+    // static size_t tail = 0;
 //     while (head < current_file->length) {
 //         char *current_char = current_file->start + head;
 //         if (!is_alphabet_numeric(*current_char)) {

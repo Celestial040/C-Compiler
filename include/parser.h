@@ -11,12 +11,11 @@ typedef struct TablesGroup {
     HashMap operator_table;
     HashMap punctuation_table;
     HashMap symbol_table;
+    StringArenaMemory *string_arena;
 } TablesGroup;
 
 
-Status parser_start();
-void pass_string_arena(StringArenaMemory *string_arena);
-void pass_loaded_file(FileString *file_string);
+Status parser_start(StringArenaMemory *string_arena, FileString *file_string);
 
 
 #endif
