@@ -6,9 +6,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include "lexer.h"
-
-
-
+#include "token.h"
 
 Status seed_keyword_table(HashMap *keyword_table) {
 
@@ -25,7 +23,7 @@ Status seed_keyword_table(HashMap *keyword_table) {
     };
 
     for (size_t i = 0; i < 34; i++) {
-        status = insert_item(keyword_table, keyword_strings[i], keyword_lengths[i]);
+        status = insert_item(keyword_table, keyword_strings[i], keyword_lengths[i],(Token) {.category = KEYWORD, .data.keyword = (Keyword) i});
         if (status != 0) return status;
     }
 
@@ -46,7 +44,7 @@ Status seed_operator_table(HashMap *operator_table) {
     };
 
     for (size_t i = 0; i < 36; i++) {
-        status = insert_item(operator_table, operator_strings[i], operator_lengths[i]);
+        status = insert_item(operator_table, operator_strings[i], operator_lengths[i], (Token) {.category = OPERATOR, .data.operator = (Operator) i});
         if (status != 0) return status;
     }
 
@@ -66,7 +64,7 @@ Status seed_punctuation_table(HashMap *punctuation_table) {
     };
 
     for (size_t i = 0; i < 12; i++) {
-        status = insert_item(punctuation_table, punctuation_strings[i], punctuation_lengths[i]);
+        status = insert_item(punctuation_table, punctuation_strings[i], punctuation_lengths[i], (Token) {.category = PUNCTUATION, .data.punctuation = (Punctuation) i});
         if (status != 0) return status;
     }
 
@@ -81,7 +79,6 @@ Status tables_init(TablesGroup *tables_group) {
     for (size_t i = 0; i < 3; i++) if (table_creation_status[i] != 0) return table_creation_status[i];
     return NO_ERROR;
 }
-
 
 Status parser_start(StringArenaMemory *string_arena, FileString *file_string) {
     TablesGroup tables_group;
@@ -105,25 +102,8 @@ Status parser_start(StringArenaMemory *string_arena, FileString *file_string) {
 
 
 
-    // status = set_filestring_to_scan(target_file);
-    // if (status != NO_ERROR) return status;
 
-    // Identifier result;
-    // result = scan();
-    // printf("%d\n", result.type);
-
-    // result = scan();
-    // printf("%d\n", result.type);
-
-    // result = scan();
-    // printf("%d\n", result.type);
-
-    // result = scan();
-    // printf("%d\n", result.type);
-
-    // result = scan();
-    // printf("%d\n", result.type);
-
+    scan(&tables_group, file_string);
 
     return NO_ERROR;
 }

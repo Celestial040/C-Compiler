@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "token.h"
 #include "xxhash.h"
 #include "flat_array_hashmap.h"
 
@@ -41,7 +42,8 @@ bool compare_node(const char *string1, size_t string1_length,const char *string2
     return false;
 }
 
-Status insert_item(HashMap *hashmap, const char *string, const size_t string_length) {
+Status insert_item(HashMap *hashmap, const char *string, const size_t string_length,Token token_representative) {
+
     if (hashmap->current_bucket_count + 1 == hashmap->max_bucket_count) {
         return ARRAY_FULL;
     }
@@ -52,6 +54,7 @@ Status insert_item(HashMap *hashmap, const char *string, const size_t string_len
     new_node.string_pointer = string;
     new_node.string_length = string_length;
     new_node.probe_count = 0;
+    new_node.token = token_representative;
 
     size_t target_index = hash_result % hashmap->max_bucket_count;
 
@@ -68,7 +71,7 @@ Status insert_item(HashMap *hashmap, const char *string, const size_t string_len
         }
         hash_offset++;
         new_node.probe_count++;
-        target_index = (new_node.hash + hash_offset) % hashmap->max_bucket_count;
+        target_index = (hash_result + hash_offset) % hashmap->max_bucket_count;
         target_bucket = hashmap->bucketarray + target_index;
     }
 
