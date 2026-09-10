@@ -6,12 +6,6 @@
 #include <stdio.h>
 #include "lexer.h"
 
-typedef struct TablesGroup {
-    HashMap keyword_table;
-    HashMap operator_table;
-    HashMap punctuation_table;
-    HashMap symbol_table;
-} TablesGroup;
 
 StringArenaMemory *arena = NULL;
 FileString *target_file = NULL;

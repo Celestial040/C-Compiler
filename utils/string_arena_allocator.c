@@ -2,24 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stddef.h>
-
-typedef struct StringArenaNode {
-    char *initial_pointer;
-    size_t used;
-    size_t capacity;
-    struct StringArenaNode *prev;
-}
-StringArenaNode;
-
-typedef struct StringArenaMemory {
-    struct StringArenaNode *last_node;
-}StringArenaMemory;
-
-typedef struct StringArenaPointer {
-    char *string_pointer;
-    size_t string_length;
-    Status status;
-}StringArenaPointer;
+#include "string_arena_allocator.h"
 
 
 Status new_arena_node(StringArenaNode **node, size_t size_requested) {

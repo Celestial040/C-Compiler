@@ -3,13 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "status.h"
+#include "file_loader.h"
 
-typedef struct FileString {
-    char *start;
-    size_t length;
-} Filestring;
-
-Status read_file(const char *filename, Filestring *output) {
+Status read_file(const char *filename, FileString *output) {
     FILE *file_pointer = fopen(filename, "rb");
     if (file_pointer == NULL) {
         return FILE_NOT_FOUND;
@@ -41,7 +37,7 @@ Status read_file(const char *filename, Filestring *output) {
     return NO_ERROR;
 }
 
-Status free_file_string(Filestring *filestring) {
+Status free_file_string(FileString *filestring) {
     if (filestring->start || filestring->length) {
         return NULL_POINTER;
     }

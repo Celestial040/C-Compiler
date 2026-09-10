@@ -6,25 +6,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "xxhash.h"
-
-typedef struct BucketNode{
-    uint64_t hash;
-    const char *string_pointer;
-    size_t string_length;
-    size_t probe_count;
-}BucketNode;
-
-typedef struct HashMap {
-    BucketNode *bucketarray;
-    size_t max_bucket_count;
-    size_t current_bucket_count;
-} HashMap;
-
-typedef struct FoundStringMatch {
-    Status status;
-    BucketNode *node_pointer;
-} FoundStringMatch;
-
+#include "flat_array_hashmap.h"
 
 Status create_hashmap(HashMap *hashmap, size_t bucket_count) {
     BucketNode *allocated_bucket = (BucketNode *) malloc(sizeof(BucketNode) * bucket_count);
@@ -90,15 +72,13 @@ Status insert_item(HashMap *hashmap, const char *string, const size_t string_len
         target_bucket = hashmap->bucketarray + target_index;
     }
 
-
-
     memcpy(target_bucket,  &new_node, sizeof(BucketNode));
     hashmap->current_bucket_count++;
 
     return NO_ERROR;
 }
 
-Status check_item(HashMap *hashmap, char *string, size_t string_length) {
+Status check_item(HashMap *hashmap, const char *string, size_t string_length) {
     uint64_t hash_result = xxh64(string, string_length,0);
 
     size_t target_index = hash_result % hashmap->max_bucket_count;
@@ -117,7 +97,7 @@ Status check_item(HashMap *hashmap, char *string, size_t string_length) {
     return ITEM_NOT_FOUND;
 }
 
-FoundStringMatch find_item(HashMap *hashmap, char *string, size_t string_length) {
+FoundStringMatch find_item(HashMap *hashmap, const char *string, size_t string_length) {
     uint64_t hash_result = xxh64(string, string_length,0);
 
     size_t target_index = hash_result % hashmap->max_bucket_count;

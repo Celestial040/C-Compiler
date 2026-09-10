@@ -11,7 +11,7 @@
 
 typedef struct BucketNode{
     uint64_t hash;
-    char *string_pointer;
+    const char *string_pointer;
     size_t string_length;
     size_t probe_count;
 }BucketNode;
