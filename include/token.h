@@ -2,6 +2,7 @@
 #define TOKEN_H
 
 #include <stddef.h>
+#include <stdio.h>
 
 typedef enum TokenCategory {
     KEYWORD,
@@ -9,6 +10,7 @@ typedef enum TokenCategory {
     PUNCTUATION,
     IDENTIFIER,
     LITERAL,
+    UNKNOWN,
 } TokenCategory;
 
 typedef enum Keyword {
@@ -125,5 +127,33 @@ typedef struct Token {
         } literal;
     } data;
 } Token;
+
+static inline void print_token_detail(Token token) {
+    switch (token.category) {
+        case KEYWORD:
+            printf("%d \n", token.data.keyword);
+            break;
+
+        case OPERATOR:
+            printf("%d \n", token.data.operator);
+            break;
+
+        case PUNCTUATION:
+            printf("%d \n", token.data.punctuation);
+            break;
+
+        case IDENTIFIER:
+            printf("%s \n", token.data.identifier.value);
+            break;
+
+        case LITERAL:
+            printf("%s \n", token.data.literal.value);
+            break;
+
+        default:
+            printf("I don't know what is this \n");
+            break;
+    }
+}
 
 #endif

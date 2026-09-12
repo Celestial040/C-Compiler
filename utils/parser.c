@@ -105,7 +105,9 @@ Status parser_start(StringArenaMemory *string_arena, FileString *file_string) {
 
 
 
-    scan(&tables_group, file_string);
+    print_token_detail(scan(&tables_group, file_string));
+    print_token_detail(scan(&tables_group, file_string));
+
 
     return NO_ERROR;
 }

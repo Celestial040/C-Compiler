@@ -11,7 +11,7 @@ int main() {
     if (status != 0) goto error_exit;
 
     FileString loaded_file_string;
-    status = read_file("./test.c", &loaded_file_string);
+    status = read_file("./test_files/test.c", &loaded_file_string);
     if (status != 0) goto error_exit;
 
     status = parser_start(&string_arena,&loaded_file_string);
