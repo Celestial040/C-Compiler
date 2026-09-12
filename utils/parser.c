@@ -121,8 +121,8 @@ Status parser_start(StringArenaMemory *string_arena, FileString *file_string) {
     print_token_detail(token);
     token = scan(&tables_group, file_string);
     print_token_detail(token);
-    token = scan(&tables_group, file_string);
-    print_token_detail(token);
+    // token = scan(&tables_group, file_string);
+    // print_token_detail(token);
 
     return NO_ERROR;
 }

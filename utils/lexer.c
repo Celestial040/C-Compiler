@@ -11,58 +11,100 @@
 // #include "parser.h"
 #include "lexer.h"
 
+typedef enum CharType {
+    WHITESPACE,
+    ALPHANUMERIC,
+    SYMBOL,
+    STRING_LITERAL,
+    NUMERAL_LITERAL,
+} CharType;
 
+CharType char_type_check(const char target) {
+    if (target == 39 || target == 34) {
+        return STRING_LITERAL;
+    } else if (is_alphabet_numeric(target)) {
+        return ALPHANUMERIC;
+    } else if (is_whitespace(target)) {
+        return WHITESPACE;
+    } else {
+        return SYMBOL;
+    }
+}
 
 Token scan(TablesGroup *working_table, FileString *file_string) {
     static size_t head = 0;
     static size_t tail = 0;
-    static bool alphanum_state = true;
     static char *current_char = NULL;
+    static CharType head_type = WHITESPACE;
+    static CharType tail_type = WHITESPACE;
+    static FoundStringMatch lookup_result;
+    static Token token;
 
-    // printf("%ld", head);
-    // printf("%ld", tail);
-
-    // printf("\n");
+    printf("%ld", head);
+    printf("%ld", tail);
+    printf("\n");
 
     while (head < file_string->length) {
         current_char = file_string->start+head;
+        head_type = char_type_check(*current_char);
 
-        if (!is_alphabet_numeric(*current_char)) {
-            if (alphanum_state) {
-                alphanum_state = false;
 
-                FoundStringMatch lookup_result = find_item(&working_table->keyword_table,file_string->start+tail, head-tail);
-                if (lookup_result.status == NO_ERROR) {
-                    return (Token) {.category = KEYWORD, .data.keyword=lookup_result.node_pointer->token.data.keyword};
-                }
 
-                lookup_result = find_item(&working_table->operator_table,file_string->start+tail, head-tail);
-                if (lookup_result.status == NO_ERROR) {
-                    return (Token) {.category = OPERATOR, .data.operator=lookup_result.node_pointer->token.data.operator};
-                }
+        if (head_type != tail_type) {
+            switch (tail_type) {
 
-                lookup_result = find_item(&working_table->punctuation_table,file_string->start+tail, head-tail);
-                if (lookup_result.status == NO_ERROR) {
-                    return (Token) {.category = PUNCTUATION, .data.punctuation=lookup_result.node_pointer->token.data.punctuation};
-                }
+                case WHITESPACE:
+                    tail = head;
+                    tail_type = char_type_check(file_string->start[tail]);
+                    continue;
 
-                StringArenaPointer arena_pointer = insert_string_to_arena(working_table->string_arena,file_string->start+tail, head-tail);
-                Token identifier = {.category=IDENTIFIER, .data.identifier = {.value = arena_pointer.string_pointer, .value_length = arena_pointer.string_length}};
-                insert_item(&working_table->symbol_table, arena_pointer.string_pointer, arena_pointer.string_length,identifier);
-                return identifier;
+                case ALPHANUMERIC:
+                    lookup_result = find_item(&working_table->keyword_table,file_string->start+tail, head-tail);
+                    if (lookup_result.status == NO_ERROR) {
+                        tail = head;
+                        tail_type = char_type_check(file_string->start[tail]);
+                        return (Token) {.category = KEYWORD, .data.keyword=lookup_result.node_pointer->token.data.keyword};
+                    }
 
-            } else if (is_whitespace(*current_char)){
-                head++;
-                continue;
+                    lookup_result = find_item(&working_table->symbol_table, file_string->start+tail, head-tail);
+                    if (lookup_result.status == NO_ERROR) {
+                        tail = head;
+                        tail_type = char_type_check(file_string->start[tail]);
+                        return (Token) {.category = KEYWORD, .data.keyword=lookup_result.node_pointer->token.data.keyword};
+                    }
+
+                    StringArenaPointer arena_pointer = insert_string_to_arena(working_table->string_arena,file_string->start+tail, head-tail);
+                    tail = head;
+                    tail_type = char_type_check(file_string->start[tail]);
+                    return (Token) {.category=IDENTIFIER, .data.identifier = {.value = arena_pointer.string_pointer, .value_length = arena_pointer.string_length}};
+
+                    break;
+
+                case SYMBOL:
+                    lookup_result = find_item(&working_table->operator_table,file_string->start+tail, head-tail);
+                    if (lookup_result.status == NO_ERROR) {
+                        tail = head;
+                        tail_type = char_type_check(file_string->start[tail]);
+                        return (Token)  {.category = OPERATOR, .data.operator=lookup_result.node_pointer->token.data.operator};
+                    }
+
+                    lookup_result = find_item(&working_table->punctuation_table,file_string->start+tail, head-tail);
+                    if (lookup_result.status == NO_ERROR) {
+                        tail = head;
+                        tail_type = char_type_check(file_string->start[tail]);
+                        return (Token)  {.category = PUNCTUATION, .data.punctuation=lookup_result.node_pointer->token.data.punctuation};
+                    }
+                    break;
+
+                case STRING_LITERAL:
+                    break;
+
+                case NUMERAL_LITERAL:
+                    break;
             }
         }
-        else {
-            if (!alphanum_state) {
-                alphanum_state = true;
-                tail = head;
-            }
-            head++;
-        }
+
+        head++;
     }
 
     return (Token) {.category = UNKNOWN};
