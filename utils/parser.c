@@ -4,6 +4,7 @@
 #include "status.h"
 #include "string_arena_allocator.h"
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include "lexer.h"
 #include "token.h"
@@ -117,12 +118,13 @@ Status parser_start(StringArenaMemory *string_arena, FileString *file_string) {
     status = tables_init(&tables_group);
     if (status != 0) return status;
 
-    Token token = scan(&tables_group, file_string);
-    print_token_detail(token);
-    token = scan(&tables_group, file_string);
-    print_token_detail(token);
-    // token = scan(&tables_group, file_string);
-    // print_token_detail(token);
+    Token token;
+
+    for (uint8_t i = 0; i < 9; i++) {
+        token = scan(&tables_group, file_string);
+        print_token_detail(token);
+    }
+
 
     return NO_ERROR;
 }

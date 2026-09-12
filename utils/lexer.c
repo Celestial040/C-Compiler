@@ -16,7 +16,7 @@ typedef enum CharType {
     ALPHANUMERIC,
     SYMBOL,
     STRING_LITERAL,
-    NUMERAL_LITERAL,
+    NUMERIC_LITERAL,
 } CharType;
 
 CharType char_type_check(const char target) {
@@ -40,17 +40,22 @@ Token scan(TablesGroup *working_table, FileString *file_string) {
     static FoundStringMatch lookup_result;
     static Token token;
 
-    printf("%ld", head);
-    printf("%ld", tail);
-    printf("\n");
-
     while (head < file_string->length) {
+
         current_char = file_string->start+head;
         head_type = char_type_check(*current_char);
 
-
-
         if (head_type != tail_type) {
+
+            if (head_type == ALPHANUMERIC && is_numeric(*current_char)) {
+                head_type = NUMERIC_LITERAL;
+            }
+
+            if (tail_type == NUMERIC_LITERAL && is_it_numeric_literal(*current_char)) {
+                head_type = NUMERIC_LITERAL;
+                continue;
+            }
+
             switch (tail_type) {
 
                 case WHITESPACE:
@@ -78,8 +83,6 @@ Token scan(TablesGroup *working_table, FileString *file_string) {
                     tail_type = char_type_check(file_string->start[tail]);
                     return (Token) {.category=IDENTIFIER, .data.identifier = {.value = arena_pointer.string_pointer, .value_length = arena_pointer.string_length}};
 
-                    break;
-
                 case SYMBOL:
                     lookup_result = find_item(&working_table->operator_table,file_string->start+tail, head-tail);
                     if (lookup_result.status == NO_ERROR) {
@@ -99,8 +102,11 @@ Token scan(TablesGroup *working_table, FileString *file_string) {
                 case STRING_LITERAL:
                     break;
 
-                case NUMERAL_LITERAL:
-                    break;
+                case NUMERIC_LITERAL:
+                    arena_pointer = insert_string_to_arena(working_table->string_arena,file_string->start+tail, head-tail);
+                    tail = head;
+                    tail_type = char_type_check(file_string->start[tail]);
+                    return (Token) {.category=IDENTIFIER, .data.identifier = {.value = arena_pointer.string_pointer, .value_length = arena_pointer.string_length}};
             }
         }
 

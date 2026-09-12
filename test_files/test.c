@@ -1,2 +1,2 @@
- int num = 12;
+int num=12;
 num+=3;
