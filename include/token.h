@@ -46,8 +46,12 @@ typedef enum Keyword {
     WHILE,
     INLINE,
     BOOL,
+    RESTRICT,
+    COMPLEX,
+    IMAGINARY,
     UNKNOWN_KEYWORD,
 } Keyword;
+
 
 typedef enum Operator {
     PLUS,

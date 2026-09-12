@@ -15,14 +15,16 @@ Status seed_keyword_table(HashMap *keyword_table) {
     static const char *keyword_strings[] = {
         "auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else", "enum",
         "extern", "float", "for", "goto", "if", "int", "long", "register", "return", "short", "signed",
-        "sizeof", "static", "struct", "switch", "typedef", "union", "unsigned", "void", "volatile", "while", "inline", "_Bool",
+        "sizeof", "static", "struct", "switch", "typedef", "union", "unsigned", "void", "volatile", "while",
+        "inline", "_Bool", "restrict", "_Complex", "_Imaginary",
     };
 
     static const size_t keyword_lengths[] = {
-        4, 5, 4, 4, 5, 8, 7, 2, 6, 4, 4, 6, 5, 3, 4, 2, 3, 4, 8, 6, 5, 6, 6, 6, 6, 6, 7, 5, 8, 4, 8, 5, 6, 5,
+        4, 5, 4, 4, 5, 8, 7, 2, 6, 4, 4, 6, 5, 3, 4, 2, 3, 4, 8, 6, 5, 6, 6, 6, 6, 6, 7, 5, 8, 4, 8, 5,
+        6, 5, 8, 8, 10,
     };
 
-    for (size_t i = 0; i < 34; i++) {
+    for (size_t i = 0; i < 37; i++) {
         status = insert_item(keyword_table, keyword_strings[i], keyword_lengths[i],(Token) {.category = KEYWORD, .data.keyword = (Keyword) i});
         if (status != 0) return status;
     }

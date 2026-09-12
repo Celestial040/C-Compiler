@@ -1,0 +1,27 @@
+compiler file.c              # positional arg = input file (bypasses stdin)
+compiler -                    # dash = read from stdin explicitly
+
+-o out                        # output file name (binary or object)
+-S                             # emit assembly (.s), stop before assembling
+-c                             # emit object file (.o), stop before linking
+-E                             # preprocess only, print result, stop
+
+--target=x86_64-linux-gnu     # optional if you support only one target
+-m64                           # explicit 64-bit codegen (moot if only target is x86_64)
+
+-std=c99                       # even if it's your only mode, good to accept the flag and ignore/validate it
+-Wall                          # warnings on
+-Werror                        # warnings as errors
+-pedantic                      # strict standard conformance (reject compiler extensions)
+
+-I dir                         # add include search path
+-D NAME=value                  # define macro from command line
+-U NAME                        # undefine macro
+
+-l name                        # link library
+-L dir                         # library search path
+-static                        # static linking
+
+-v                              # verbose (show internal passes/steps)
+--version
+--help
