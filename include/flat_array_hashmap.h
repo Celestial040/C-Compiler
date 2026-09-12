@@ -42,7 +42,7 @@ typedef struct TablesGroup {
 
 uint64_t hash_string(const char* str, size_t len);
 Status create_hashmap(HashMap *hashmap, size_t bucket_count);
-Status insert_item(HashMap *hashmap, const char *string, const size_t string_length,Token token_representative);
+Status insert_item(HashMap *hashmap, char *string, const size_t string_length,Token token_representative);
 Status check_item(HashMap *hashmap, const char *string, size_t string_length);
 FoundStringMatch find_item(HashMap *hashmap, const char *string, size_t string_length);
 

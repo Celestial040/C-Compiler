@@ -42,7 +42,7 @@ bool compare_node(const char *string1, size_t string1_length,const char *string2
     return false;
 }
 
-Status insert_item(HashMap *hashmap, const char *string, const size_t string_length,Token token_representative) {
+Status insert_item(HashMap *hashmap, char *string, const size_t string_length,Token token_representative) {
 
     if (hashmap->current_bucket_count + 1 == hashmap->max_bucket_count) {
         return ARRAY_FULL;

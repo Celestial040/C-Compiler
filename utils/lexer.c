@@ -1,6 +1,7 @@
 #include "char_manip.h"
 #include "file_loader.h"
 #include "flat_array_hashmap.h"
+#include "string_arena_allocator.h"
 #include "token.h"
 #include "status.h"
 #include <stdbool.h>
@@ -18,7 +19,12 @@ Token scan(TablesGroup *working_table, FileString *file_string) {
     static bool alphanum_state = true;
     static char *current_char = NULL;
 
-    while (head < 6) {
+    // printf("%ld", head);
+    // printf("%ld", tail);
+
+    // printf("\n");
+
+    while (head < file_string->length) {
         current_char = file_string->start+head;
 
         if (!is_alphabet_numeric(*current_char)) {
@@ -40,7 +46,10 @@ Token scan(TablesGroup *working_table, FileString *file_string) {
                     return (Token) {.category = PUNCTUATION, .data.punctuation=lookup_result.node_pointer->token.data.punctuation};
                 }
 
-
+                StringArenaPointer arena_pointer = insert_string_to_arena(working_table->string_arena,file_string->start+tail, head-tail);
+                Token identifier = {.category=IDENTIFIER, .data.identifier = {.value = arena_pointer.string_pointer, .value_length = arena_pointer.string_length}};
+                insert_item(&working_table->symbol_table, arena_pointer.string_pointer, arena_pointer.string_length,identifier);
+                return identifier;
 
             } else if (is_whitespace(*current_char)){
                 head++;
