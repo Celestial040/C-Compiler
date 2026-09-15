@@ -8,7 +8,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
-// #include "parser.h"
 #include "lexer.h"
 
 typedef enum CharType {
