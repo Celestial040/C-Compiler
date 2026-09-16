@@ -1,9 +1,13 @@
 #include "tokens_hashmap.h"
 #include "fnv1a32.h"
 #include "status.h"
+#include "string_pool.h"
+#include "symbol_pool.h"
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 Status init_hashmap(TokensHashMap *hashmap, size_t bucket_count) {
@@ -19,6 +23,24 @@ Status init_hashmap(TokensHashMap *hashmap, size_t bucket_count) {
     return NO_ERROR;
 };
 
+bool compare_slot(SymbolPool *symbol_pool, HashSlot *slot1, HashSlot *slot2) {
+    SymbolEntry *slot1_entry = symbol_pool->entries + slot1->symbol_id;
+    SymbolEntry *slot2_entry = symbol_pool->entries + slot2->symbol_id;
+    StringPool *string_pool = symbol_pool->string_pool;
+    if (slot1_entry->string_length != slot2_entry->string_length &&
+        memcmp(string_pool+slot1_entry->string_index, string_pool+slot2_entry->string_index, slot1_entry->string_length) == 0) {
+        return true;
+    }
+    return false;
+}
+
+void swap_slot(HashSlot *slot1, HashSlot *slot2) {
+    HashSlot temp;
+    memcpy(&temp, slot1, sizeof(HashSlot));
+    memcpy(slot1, slot2, sizeof(HashSlot));
+    memcpy(slot2, &temp, sizeof(HashSlot));
+}
+
 Status rehash_hashmap(TokensHashMap *hashmap, size_t resize_target_size) {
     HashSlot *temp = (HashSlot *)  calloc(sizeof(HashSlot),resize_target_size);
     if (temp == NULL) {
@@ -29,6 +51,30 @@ Status rehash_hashmap(TokensHashMap *hashmap, size_t resize_target_size) {
         if (hashmap->slots[i].hash == 0) {
             continue;
         }
+
+        HashSlot tempSlot = {.hash = hashmap->slots[i].hash,
+                             .symbol_id = hashmap->slots[i].symbol_id,
+                             .probe_count = 0};
+
+        size_t target_index = hashmap->slots[i].hash % resize_target_size;
+        size_t hash_offset = 0;
+
+        while (temp[target_index].hash != 0) {
+            if (temp[target_index].hash != tempSlot.hash) {
+                continue;
+            }
+            if (!compare_slot(hashmap->symbol_pool, temp+target_index, &tempSlot)) {
+                continue;
+            }
+            if (temp[target_index].probe_count < tempSlot.probe_count) {
+                swap_slot(temp+target_index, &tempSlot);
+            }
+
+            target_index = (hashmap->slots[i].hash + hash_offset) % resize_target_size;
+            hash_offset++;
+            tempSlot.probe_count++;
+        }
+        memcpy(temp+target_index, &tempSlot, sizeof(HashSlot));
     }
     free(hashmap->slots);
     hashmap->slots = temp;
@@ -46,5 +92,30 @@ Status insert_item(TokensHashMap *hashmap, const char *string, const size_t stri
     }
 
     uint32_t hash_result = fnv1a32(string, string_length);
+    HashSlot tempSlot = {.hash = hash_result,
+                         .symbol_id = symbol_id,
+                         .probe_count = 0};
+
+    size_t target_index = hash_result % hashmap->capacity;
+    size_t hash_offset = 0;
+
+    while (hashmap->slots[target_index].hash != 0) {
+        if (hashmap->slots[target_index].hash != tempSlot.hash) {
+            continue;
+        }
+        if (compare_slot(hashmap->symbol_pool, hashmap->slots+target_index, &tempSlot)) {
+            return ITEM_ALREADY_EXIST;
+        }
+        if (hashmap->slots[target_index].probe_count < tempSlot.probe_count) {
+            swap_slot(hashmap->slots+target_index, &tempSlot);
+        }
+
+        target_index = (hash_result + hash_offset) % hashmap->capacity;
+        hash_offset++;
+        tempSlot.probe_count++;
+    }
+    memcpy(hashmap->slots+target_index, &tempSlot, sizeof(HashSlot));
+    hashmap->count++;
+
     return NO_ERROR;
 }

@@ -2,7 +2,6 @@
 #define TOKENS_HASHMAP_H
 
 #include "status.h"
-#include "string_pool.h"
 #include "symbol_pool.h"
 #include <string.h>
 #include <stdlib.h>
@@ -139,9 +138,10 @@ typedef struct TokensHashMap {
     size_t capacity;
     size_t count;
     size_t mask;
-    SymbolPool *symbol_pool
+    SymbolPool *symbol_pool;
 } TokensHashMap;
 
-
+Status init_hashmap(TokensHashMap *hashmap, size_t bucket_count);
+Status insert_item(TokensHashMap *hashmap, const char *string, const size_t string_length, size_t symbol_id);
 
 #endif
