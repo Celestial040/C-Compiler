@@ -11,7 +11,8 @@ typedef enum Status {
     READ_ERROR,
     ITEM_FOUND,
     ITEM_ALREADY_EXIST,
-    ARRAY_FULL
+    ARRAY_FULL,
+    STRING_EMPTY,
 } Status;
 
 
@@ -43,6 +44,9 @@ static inline void status_print(Status status) {
             break;
         case ARRAY_FULL:
             printf("ARRAY_FULL\n");
+            break;
+        case STRING_EMPTY:
+            printf("STRING_EMPTY\n");
             break;
         default:
             printf("UNKNOWN_STATUS\n");
