@@ -51,6 +51,8 @@ typedef struct SymbolEntry {
     const char *name;     // Pointer to string data in arena
     uint16_t length;      // String byte length
     SymbolKind kind;      // Semantic role (Variable, Func, Typedef...)
+    TokenKind token_kind;
+    uint8_t sub_kind;
     uint8_t scope_depth;  // Nesting level where symbol was declared
     uint32_t flags;       // Attributes (const, static, extern, inline...)
     void *payload;        // Pointer to type descriptor or AST node

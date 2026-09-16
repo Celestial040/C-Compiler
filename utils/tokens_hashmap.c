@@ -27,8 +27,15 @@ bool compare_slot(SymbolPool *symbol_pool, HashSlot *slot1, HashSlot *slot2) {
     SymbolEntry *slot1_entry = symbol_pool->entries + slot1->symbol_id;
     SymbolEntry *slot2_entry = symbol_pool->entries + slot2->symbol_id;
     StringPool *string_pool = symbol_pool->string_pool;
-    if (slot1_entry->string_length != slot2_entry->string_length &&
+    if (slot1_entry->string_length == slot2_entry->string_length &&
         memcmp(string_pool+slot1_entry->string_index, string_pool+slot2_entry->string_index, slot1_entry->string_length) == 0) {
+        return true;
+    }
+    return false;
+}
+
+bool compare_string(const char *string1, const size_t string_length1, const char *string2, const size_t string_length2) {
+    if (string_length1 == string_length2 && memcmp(string1, string2, string_length1) == 0) {
         return true;
     }
     return false;
@@ -63,8 +70,8 @@ Status rehash_hashmap(TokensHashMap *hashmap, size_t resize_target_size) {
             if (temp[target_index].hash != tempSlot.hash) {
                 continue;
             }
-            if (!compare_slot(hashmap->symbol_pool, temp+target_index, &tempSlot)) {
-                continue;
+            if (compare_slot(hashmap->symbol_pool, temp+target_index, &tempSlot)) {
+                return ITEM_ALREADY_EXIST;
             }
             if (temp[target_index].probe_count < tempSlot.probe_count) {
                 swap_slot(temp+target_index, &tempSlot);
@@ -118,4 +125,33 @@ Status insert_item(TokensHashMap *hashmap, const char *string, const size_t stri
     hashmap->count++;
 
     return NO_ERROR;
+}
+
+TokenStatus find_item(TokensHashMap *hashmap, const char *string, const size_t string_length, size_t line) {
+    uint32_t hash_result = fnv1a32(string, string_length);
+
+    size_t target_index = hash_result % hashmap->capacity;
+    uint64_t hash_offset = 0;
+    HashSlot *target_slot = hashmap->slots + target_index;
+    SymbolPool *symbol_pool = hashmap->symbol_pool;
+    StringPool *string_pool =  symbol_pool->string_pool;
+
+
+    while (hashmap->slots[target_index].hash != 0){
+        if (compare_string(string, string_length, string_pool->start_pointer + symbol_pool->entries[target_slot->symbol_id].string_index, symbol_pool->entries[target_slot->symbol_id].string_length)) {
+            Token token;
+            token.token_type = symbol_pool->entries[target_slot->symbol_id].semantic.token_type;
+            token.sub_token_type = symbol_pool->entries[target_slot->symbol_id].semantic.sub_token_type;
+            token.symbol_id = target_slot->symbol_id;
+            token.line = line;
+            return (TokenStatus) {.status = NO_ERROR, .token = token};
+        }
+        hash_offset++;
+        target_index = (hash_result + hash_offset) % hashmap->capacity;
+        target_slot = hashmap->slots + target_index;
+    }
+
+    return (TokenStatus) {.status = NO_ERROR, .token = (Token) {.token_type = TOKEN_UNKNOWN}};
+
+
 }
