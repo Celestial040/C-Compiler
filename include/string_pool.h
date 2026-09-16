@@ -20,5 +20,6 @@ typedef struct StringPoolPointer {
 
 Status allocate_string_pool(StringPool *string_pool, size_t size_requested);
 StringPoolPointer insert_string(StringPool *string_pool, const char *string, const size_t string_len);
+Status free_string_pool(StringPool *string_pool);
 
 #endif

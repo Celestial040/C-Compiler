@@ -3,6 +3,7 @@
 
 #include "status.h"
 #include "string_pool.h"
+#include "symbol_pool.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -19,20 +20,6 @@ enum {
     TOKEN_LITERAL_FLOAT,
     TOKEN_LITERAL_STRING,
     TOKEN_EOF
-};
-
-typedef uint8_t SymbolType;
-enum {
-    SYMBOL_NONE,
-    SYMBOL_KEYWORD,
-    SYMBOL_IDENTIFIER,
-    SYMBOL_TYPEDEF_NAME,
-    SYMBOL_VARIABLE,
-    SYMBOL_FUNCTION,
-    SYMBOL_STRUCT_TAG,
-    SYMBOL_UNION_TAG,
-    SYMBOL_ENUM_TAG,
-    SYMBOL_ENUM_CONSTANT
 };
 
 typedef uint8_t KeywordID ;
@@ -139,34 +126,22 @@ typedef struct Token {
     uint64_t line;
 } Token;
 
-typedef struct SymbolEntry {
-    const char *string_pointer;
-    size_t string_length;
-    size_t scope_depth;
-    void *details;
-    uint32_t added_attributes;
-    SymbolType symbol_type;
-} SymbolEntry;
-
 typedef struct HashSlot {
     size_t symbol_id;
     uint32_t hash;
     uint32_t probe_count;
 } HashSlot;
 
+
+
 typedef struct TokensHashMap {
     HashSlot *slots;
     size_t capacity;
     size_t count;
     size_t mask;
+    SymbolPool *symbol_pool
 } TokensHashMap;
 
-typedef struct SymbolPool {
-    SymbolEntry *entries;
-    size_t count;
-    size_t capacity;
-    TokensHashMap *map;
-    StringPool *pool;
-} SymbolPool;
+
 
 #endif

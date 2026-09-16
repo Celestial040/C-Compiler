@@ -46,5 +46,5 @@ Status insert_item(TokensHashMap *hashmap, const char *string, const size_t stri
     }
 
     uint32_t hash_result = fnv1a32(string, string_length);
-
+    return NO_ERROR;
 }
