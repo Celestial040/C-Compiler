@@ -19,7 +19,7 @@ TestStatusStruct test_string_pool() {
 
     if ( string_pool_test.capacity != 8){
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
-        test_status.message = "Allocation capacity isnt the right amound\n";
+        test_status.message = "Allocation capacity isnt the right size\n";
         return test_status;
     }
 
@@ -41,7 +41,7 @@ TestStatusStruct test_string_pool() {
     const char *hello = "Hello";
 
     insertion_status = insert_string(&string_pool_test, hello, 5);
-    if (string_pool_test.used != 5+1 && memcmp(string_pool_test.start_pointer, hello, 5) != 0) {
+    if (string_pool_test.used != 5+1 || memcmp(string_pool_test.start_pointer, hello, 5) != 0) {
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
         test_status.message = "Insertion doesnt give the expected value (1)\n";
         return test_status;
@@ -55,7 +55,7 @@ TestStatusStruct test_string_pool() {
 
     hello = NULL;
 
-    if (string_pool_test.used != 5+1 && memcmp(string_pool_test.start_pointer, hello, 5) != 0) {
+    if (string_pool_test.used != 5+1 || memcmp(string_pool_test.start_pointer, "Hello", 5) != 0) {
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
         test_status.message = "The memory isnt persistent (1)\n";
         return test_status;
@@ -74,7 +74,7 @@ TestStatusStruct test_string_pool() {
     world[6] = '\0';
     insertion_status = insert_string(&string_pool_test, world, 5);
 
-    if (string_pool_test.used != 5+1+5+1 && memcmp(string_pool_test.start_pointer + string_pool_test.used, world, 5) != 0) {
+    if (string_pool_test.used != 5+1+5+1 || memcmp(string_pool_test.start_pointer + 5 + 1, world, 5) != 0) {
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
         test_status.message = "Insertion doesnt give the expected value (2)\n";
         return test_status;
@@ -89,7 +89,7 @@ TestStatusStruct test_string_pool() {
     free(world);
     world = NULL;
 
-    if (string_pool_test.used != 5+1+5+1 && memcmp("world", world, 5) != 0){
+    if (string_pool_test.used != 5+1+5+1 || memcmp(string_pool_test.start_pointer + 5 + 1, "world", 5) != 0){
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
         test_status.message = "The memory isnt persistent (2)\n";
         return test_status;
@@ -104,7 +104,7 @@ TestStatusStruct test_string_pool() {
         test_status.message = "Runtime error\n";
     }
 
-    if (string_pool_test.used != 5+1+5+1+25+1 && memcmp(string_pool_test.start_pointer + string_pool_test.used, myname, 25) != 0){
+    if (string_pool_test.used != 5+1+5+1+25+1 || memcmp(string_pool_test.start_pointer + 5+1+5+1, myname, 25) != 0){
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
         test_status.message = "Insertion doesnt give the expected value (3)\n";
         return test_status;
@@ -123,7 +123,7 @@ TestStatusStruct test_string_pool() {
     }
 
     free_string_pool(&string_pool_test);
-    if (string_pool_test.start_pointer !=  NULL && string_pool_test.capacity != 0 && string_pool_test.used != 0) {
+    if (string_pool_test.start_pointer !=  NULL || string_pool_test.capacity != 0 || string_pool_test.used != 0) {
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
         test_status.message = "String pool not freed correctly";
         return test_status;

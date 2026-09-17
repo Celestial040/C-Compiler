@@ -28,7 +28,7 @@ Status reallocate_symbol_pool(SymbolPool *symbol_pool, size_t size_requested) {
 }
 
 SymbolEntryPointer insert_symbol(SymbolPool *symbol_pool, const char *string, const size_t string_len, Semantic token_semantic) {
-    SymbolEntryPointer return_pointer = {.status = NO_ERROR, .symbol_id= NULL};
+    SymbolEntryPointer return_pointer = {.status = NO_ERROR, .symbol_id= 0};
 
     if (symbol_pool->count + 1 >= symbol_pool->capacity) {
         Status reallocation_status = reallocate_symbol_pool(symbol_pool, symbol_pool->capacity*2);
@@ -56,6 +56,7 @@ Status free_symbol_pool(SymbolPool *symbol_pool) {
     }
 
     free(symbol_pool->entries);
+    free_string_pool(symbol_pool->string_pool);
     symbol_pool->entries = NULL;
     symbol_pool->string_pool = NULL;
     symbol_pool->capacity = 0;
