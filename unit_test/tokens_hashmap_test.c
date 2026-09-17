@@ -78,7 +78,8 @@ TestStatusStruct test_tokens_hashmap() {
     const size_t keyword_length[4] = {5,6,4,4};
     const uint8_t sub_token[4] = {FLOAT, DOUBLE, CHAR, LONG};
 
-    for (size_t i = 0; i < 4; i++) {
+    size_t i;
+    for (i = 0; i < 4; i++) {
         Semantic test_token = {.symbol_type=SYMBOL_KEYWORD , .token_type=TOKEN_KEYWORD, .sub_token_type=sub_token[i]};
         SymbolEntryPointer symbol_insertion_status = insert_symbol(&symbol_pool_test, mykeyword[i], keyword_length[i], test_token);
         Status insertion_status = insert_item(&tokens_hashmap_test, mykeyword[i], keyword_length[i], symbol_insertion_status.symbol_id);

@@ -4,7 +4,6 @@
 #include "string_arena_allocator.h"
 #include "token.h"
 #include "status.h"
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>

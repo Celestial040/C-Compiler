@@ -22,7 +22,8 @@ Status seed_keyword(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
         4, 5, 4, 4, 5, 8, 7, 2, 6, 4, 4, 6, 5, 3, 4, 2, 3, 4, 8, 6, 5, 6, 6, 6, 6, 6, 7, 5, 8, 4, 8, 5
     };
 
-    for (size_t i = 0; i < 32; i++) {
+    size_t i;
+    for (i = 0; i < 32; i++) {
         token_semantic.sub_token_type = i;
         symbol_insertion_status = insert_symbol(symbol_pool, keyword_strings[i], keyword_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
@@ -56,7 +57,8 @@ Status seed_operator(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
         1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1
     };
 
-    for (size_t i = 0; i < 37; i++) {
+    size_t i;
+    for (i = 0; i < 37; i++) {
         token_semantic.sub_token_type = i;
         symbol_insertion_status = insert_symbol(symbol_pool, operator_strings[i], operator_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
@@ -89,7 +91,8 @@ Status seed_punctuation(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
         1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 2,
     };
 
-    for (size_t i = 0; i < 11; i++) {
+    size_t i;
+    for (i = 0; i < 11; i++) {
         token_semantic.sub_token_type = i;
         symbol_insertion_status = insert_symbol(symbol_pool, punctuation_strings[i], punctuation_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {

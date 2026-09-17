@@ -3,7 +3,6 @@
 
 #include "status.h"
 #include <stddef.h>
-#include <stdio.h>
 
 typedef enum TestStatus {
     TEST_SUCCESS,
@@ -18,9 +17,7 @@ typedef struct TestStatusStruct {
 } TestStatusStruct;
 
 
-static inline void print_test_status(TestStatusStruct result) {
-    printf("%s",result.message);
-}
+void print_test_status(TestStatusStruct result);
 
 
 TestStatusStruct test_string_pool();

@@ -11,11 +11,13 @@ TEST_SRCS := unit_test/main.c \
              unit_test/symbol_pool_test.c \
              unit_test/tokens_hashmap_test.c \
              unit_test/runtime_exec.c \
+             unit_test/test.c \
              utils/tokens_hashmap.c \
              utils/string_pool.c \
              utils/symbol_pool.c \
              utils/file_loader.c \
              utils/new_parser.c \
+             utils/fnv1a32.c \
              utils/status.c
 
 
@@ -34,4 +36,4 @@ legacy: $(TEST_SRCS) $(TEST_HEADERS)
 	gcc -O0 -std=c89 $(INC_FLAGS) $(TEST_SRCS)  -o ./output/main_legacy
 
 test: $(TEST_SRCS) $(TEST_HEADERS)
-	gcc $(INC_FLAGS) -g $(TEST_SRCS) -o ./output/main_test
+	gcc -std=c99 $(INC_FLAGS) -g $(TEST_SRCS) -o ./output/main_test

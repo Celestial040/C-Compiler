@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 
 typedef struct HashSlot {

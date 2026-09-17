@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
-#include <stdbool.h>
+#include "bool.h"
 
 // ==========================================
 // 1. Packed Enum Types (Guaranteed 1 Byte)

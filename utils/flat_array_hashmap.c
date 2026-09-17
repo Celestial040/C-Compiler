@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
+#include "bool.h"
 #include "token.h"
 #include "xxhash.h"
 #include "flat_array_hashmap.h"

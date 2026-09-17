@@ -3,7 +3,7 @@
 #include "status.h"
 #include "string_pool.h"
 #include "symbol_pool.h"
-#include <stdbool.h>
+#include "bool.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -56,7 +56,8 @@ Status rehash_hashmap(TokensHashMap *hashmap, size_t resize_target_size) {
         return ALLOCATION_ERROR;
     }
 
-    for (size_t i = 0 ; i < hashmap->count; i++) {
+    size_t i;
+    for (i = 0 ; i < hashmap->count; i++) {
         if (hashmap->slots[i].hash == 0) {
             continue;
         }
@@ -166,31 +167,3 @@ TokenStatus lookup_item(TokensHashMap *hashmap, const char *string, const size_t
 
     return (TokenStatus) {.status = NO_ERROR, .token = (Token) {.token_type = TOKEN_UNKNOWN}};
 }
-
-
-// TokenStatus find_item(TokensHashMap *hashmap, const char *string, const size_t string_length, size_t line) {
-//     uint32_t hash_result = fnv1a32(string, string_length);
-
-//     size_t target_index = hash_result % hashmap->capacity;
-//     uint64_t hash_offset = 0;
-//     HashSlot *target_slot = hashmap->slots + target_index;
-//     SymbolPool *symbol_pool = hashmap->symbol_pool;
-//     StringPool *string_pool =  symbol_pool->string_pool;
-
-
-//     while (hashmap->slots[target_index].hash != 0){
-//         if (compare_string(string, string_length, string_pool->start_pointer + symbol_pool->entries[target_slot->symbol_id].string_index, symbol_pool->entries[target_slot->symbol_id].string_length)) {
-//             Token token;
-//             token.token_type = symbol_pool->entries[target_slot->symbol_id].semantic.token_type;
-//             token.sub_token_type = symbol_pool->entries[target_slot->symbol_id].semantic.sub_token_type;
-//             token.symbol_id = target_slot->symbol_id;
-//             token.line = line;
-//             return (TokenStatus) {.status = NO_ERROR, .token = token};
-//         }
-//         hash_offset++;
-//         target_index = (hash_result + hash_offset) % hashmap->capacity;
-//         target_slot = hashmap->slots + target_index;
-//     }
-
-//     return (TokenStatus) {.status = NO_ERROR, .token = (Token) {.token_type = TOKEN_UNKNOWN}};
-// }
