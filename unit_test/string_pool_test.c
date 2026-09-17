@@ -17,7 +17,7 @@ TestStatusStruct test_string_pool() {
         test_status.message = "Runtime error\n";
     }
 
-    if ( string_pool_test.capacity != 8){
+    if (string_pool_test.capacity != 8){
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
         test_status.message = "Allocation capacity isnt the right size\n";
         return test_status;
@@ -63,6 +63,7 @@ TestStatusStruct test_string_pool() {
 
 
     char *world = (char *) malloc(sizeof(char) * 6);
+
     insertion_status = insert_string(&string_pool_test, world, 5);
     if (insertion_status.status != STRING_EMPTY) {
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
@@ -83,6 +84,12 @@ TestStatusStruct test_string_pool() {
     if (string_pool_test.start_pointer[string_pool_test.used] != '\0') {
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
         test_status.message = "You forgot to insert null terminator (1)\n";
+        return test_status;
+    }
+
+    if (string_pool_test.capacity != 16){
+        test_status.status = TEST_FAILED_EXPECT_MISMATCH;
+        test_status.message = "Reallocation size isnt the same as expected (1)\n";
         return test_status;
     }
 
@@ -116,9 +123,9 @@ TestStatusStruct test_string_pool() {
         return test_status;
     }
 
-    if (string_pool_test.capacity != 50){
+    if (string_pool_test.capacity != 32){
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
-        test_status.message = "Reallocation size isnt the same as expected";
+        test_status.message = "Reallocation size isnt the same as expected (2)\n";
         return test_status;
     }
 

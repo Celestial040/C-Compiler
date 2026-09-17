@@ -24,4 +24,5 @@ static inline void print_test_status(TestStatusStruct result) {
 
 TestStatusStruct test_string_pool();
 TestStatusStruct test_symbol_pool();
+TestStatusStruct test_tokens_hashmap();
 #endif

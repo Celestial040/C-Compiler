@@ -1,6 +1,7 @@
 #include "string_pool.h"
 #include "status.h"
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -21,12 +22,13 @@ Status reallocate_string_pool(StringPool *string_pool, size_t size_requested) {
     if (temp == NULL) {
         return ALLOCATION_ERROR;
     }
-
+    string_pool->start_pointer = temp;
     string_pool->capacity = size_requested;
     return NO_ERROR;
 }
 
 StringPoolPointer insert_string(StringPool *string_pool, const char *string, const size_t string_len) {
+
     StringPoolPointer return_pointer = {.status = NO_ERROR, .string_length = 0, .string_start = 0};
 
     if (string_len == 0 || string == NULL || string[0] == '\0') {
@@ -34,12 +36,12 @@ StringPoolPointer insert_string(StringPool *string_pool, const char *string, con
         return return_pointer;
     }
 
-    if (string_pool->used + string_len >= string_pool->capacity) {
+    if (string_pool->used + string_len + 1 >= string_pool->capacity) {
         size_t requested_size = string_pool->capacity * 2;
-        if (string_len * 2 > requested_size) {
+        if (string_len + 1 > requested_size) {
             requested_size = string_len * 2;
         }
-        Status reallocation_status = reallocate_string_pool(string_pool, requested_size);
+        Status reallocation_status = reallocate_string_pool(string_pool, sizeof(char) * requested_size);
         if (reallocation_status != NO_ERROR) {
             return_pointer.status = reallocation_status;
             return return_pointer;

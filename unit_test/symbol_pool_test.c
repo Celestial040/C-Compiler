@@ -2,7 +2,8 @@
 #include "string_pool.h"
 #include "symbol_pool.h"
 #include "test.h"
-#include <stdlib.h>
+#include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 
 TestStatusStruct test_symbol_pool() {
@@ -71,6 +72,37 @@ TestStatusStruct test_symbol_pool() {
         return test_status;
     }
 
+
+    const char *mykeyword[4] = {"void","double","char","long"};
+    const size_t keyword_length[4] = {4,6,4,4};
+    const uint8_t sub_token[4] = {VOID, DOUBLE, CHAR, LONG};
+    size_t offset_pointer = 10;
+
+    for (size_t i = 0; i < 2; i++) {
+        Semantic test_token = {.symbol_type=SYMBOL_KEYWORD , .token_type=TOKEN_KEYWORD, .sub_token_type=sub_token[i]};
+        symbol_insertion_status = insert_symbol(&symbol_pool_test, mykeyword[i], keyword_length[i], test_token);
+
+        if (symbol_insertion_status.status != NO_ERROR) {
+            status_print(symbol_insertion_status.status);
+            test_status.status = TEST_FAILED_RUNTIME_ERROR;
+            test_status.message = "Runtime error\n";
+        }
+
+        SymbolEntry created_entry = symbol_pool_test.entries[symbol_insertion_status.symbol_id];
+        if (created_entry.string_index != offset_pointer || created_entry.string_length != keyword_length[i]) {
+            test_status.status = TEST_FAILED_EXPECT_MISMATCH;
+            test_status.message = "String pointer and length expected mismatch\n";
+            return test_status;
+        }
+
+        if (memcmp(&created_entry.semantic, &test_token, sizeof(test_token))) {
+            test_status.status = TEST_FAILED_EXPECT_MISMATCH;
+            test_status.message = "Semantic token expected mismatch\n";
+            return test_status;
+        }
+        offset_pointer += ( keyword_length[i] + 1 );
+    }
+
     free_symbol_pool(&symbol_pool_test);
 
     if (symbol_pool_test.entries !=  NULL || symbol_pool_test.capacity != 0 || symbol_pool_test.count != 0) {
@@ -84,7 +116,6 @@ TestStatusStruct test_symbol_pool() {
         test_status.message = "String pool inside symbol pool not freed correctly";
         return test_status;
     }
-
 
 
     return test_status;

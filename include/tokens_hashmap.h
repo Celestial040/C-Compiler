@@ -24,7 +24,8 @@ typedef struct TokensHashMap {
     SymbolPool *symbol_pool;
 } TokensHashMap;
 
-Status init_hashmap(TokensHashMap *hashmap, size_t bucket_count);
+Status allocate_hashmap(TokensHashMap *hashmap, SymbolPool *symbol_pool, size_t bucket_count);
 Status insert_item(TokensHashMap *hashmap, const char *string, const size_t string_length, size_t symbol_id);
+TokenStatus lookup_item(TokensHashMap *hashmap, const char *string, const size_t string_length, size_t line);
 
 #endif
