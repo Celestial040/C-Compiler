@@ -10,10 +10,13 @@ TEST_SRCS := unit_test/main.c \
              unit_test/string_pool_test.c \
              unit_test/symbol_pool_test.c \
              unit_test/tokens_hashmap_test.c \
+             unit_test/runtime_exec.c \
              utils/tokens_hashmap.c \
              utils/string_pool.c \
              utils/symbol_pool.c \
-             utils/file_loader.c
+             utils/file_loader.c \
+             utils/new_parser.c \
+             utils/status.c
 
 
 HEADERS := $(wildcard include/*.h)
@@ -27,11 +30,8 @@ all: release debug
 release: $(SRCS) $(HEADERS)
 	gcc -O2 -march=native $(INC_FLAGS) $(SRCS) -o ./output/main
 
-legacy: $(SRCS) $(HEADERS)
-	gcc -O0 -std=c89 $(INC_FLAGS) $(SRCS) -o ./output/main
-
-fast: $(SRCS) $(HEADERS)
-	gcc $(INC_FLAGS) -g $(SRCS) -o ./output/main_debug
+legacy: $(TEST_SRCS) $(TEST_HEADERS)
+	gcc -O0 -std=c89 $(INC_FLAGS) $(TEST_SRCS)  -o ./output/main_legacy
 
 test: $(TEST_SRCS) $(TEST_HEADERS)
 	gcc $(INC_FLAGS) -g $(TEST_SRCS) -o ./output/main_test

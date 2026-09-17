@@ -19,7 +19,7 @@ enum {
     TOKEN_UNKNOWN,
 };
 
-typedef uint8_t KeywordID ;
+typedef uint8_t KeywordID;
 enum {
     AUTO,
     BREAK,
@@ -52,12 +52,7 @@ enum {
     UNSIGNED,
     VOID,
     VOLATILE,
-    WHILE,
-    INLINE,
-    BOOL,
-    RESTRICT,
-    COMPLEX,
-    IMAGINARY,
+    WHILE
 };
 
 typedef uint8_t OperatorID;
@@ -98,6 +93,7 @@ enum {
     ARROW,
     DOT,
     QUESTION,
+    COMMA,
 };
 
 typedef uint8_t PunctuationID;
@@ -108,7 +104,6 @@ enum {
     CLOSE_SQUARE_BRACKET,
     OPEN_CURLY_BRACKET,
     CLOSE_CURLY_BRACKET,
-    COMMA,
     SEMICOLON,
     COLON,
     ELLIPSIS,

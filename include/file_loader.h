@@ -2,6 +2,7 @@
 #define FILE_LOADER_H
 
 #include "status.h"
+#include <stddef.h>
 
 typedef struct FileString {
     char *start;

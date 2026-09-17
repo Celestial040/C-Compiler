@@ -99,32 +99,32 @@ Status tables_init(TablesGroup *tables_group) {
 }
 
 Status parser_start(StringArenaMemory *string_arena, FileString *file_string) {
-    TablesGroup tables_group;
-    tables_group.string_arena = string_arena;
-    Status tables_status[4];
+    // TablesGroup tables_group;
+    // tables_group.string_arena = string_arena;
+    // Status tables_status[4];
 
-    tables_status[0] = create_hashmap(&tables_group.keyword_table, 34*2);
-    tables_status[1] = create_hashmap(&tables_group.operator_table, 36*2);
-    tables_status[2] = create_hashmap(&tables_group.punctuation_table, 12*2);
-    tables_status[3] = create_hashmap(&tables_group.symbol_table, 2048*2);
+    // tables_status[0] = create_hashmap(&tables_group.keyword_table, 34*2);
+    // tables_status[1] = create_hashmap(&tables_group.operator_table, 36*2);
+    // tables_status[2] = create_hashmap(&tables_group.punctuation_table, 12*2);
+    // tables_status[3] = create_hashmap(&tables_group.symbol_table, 2048*2);
 
-    for(size_t i = 0; i < 4; i++) {
-        if (tables_status[i] != NO_ERROR) {
-            return tables_status[i];
-        };
-    }
+    // for(size_t i = 0; i < 4; i++) {
+    //     if (tables_status[i] != NO_ERROR) {
+    //         return tables_status[i];
+    //     };
+    // }
 
-    Status status;
-    status = tables_init(&tables_group);
-    if (status != 0) return status;
+    // Status status;
+    // status = tables_init(&tables_group);
+    // if (status != 0) return status;
 
-    Token token;
+    // Token token;
 
-    for (uint8_t i = 0; i < 9; i++) {
-        token = scan(&tables_group, file_string);
-        print_token_detail(token);
-    }
+    // for (uint8_t i = 0; i < 9; i++) {
+    //     token = scan(&tables_group, file_string);
+    //     print_token_detail(token);
+    // }
 
 
-    return NO_ERROR;
+    // return NO_ERROR;
 }

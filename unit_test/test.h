@@ -1,6 +1,7 @@
 #ifndef TEST_SUITE_H
 #define TEST_SUITE_H
 
+#include "status.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -25,4 +26,5 @@ static inline void print_test_status(TestStatusStruct result) {
 TestStatusStruct test_string_pool();
 TestStatusStruct test_symbol_pool();
 TestStatusStruct test_tokens_hashmap();
+Status runtime_exec();
 #endif
