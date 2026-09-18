@@ -3,12 +3,22 @@
 #include "string_pool.h"
 #include "symbol_pool.h"
 #include "tokens_hashmap.h"
+#include "new_lexer.h"
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+#include "new_parser.h"
 
-Status seed_keyword(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
+static StringPool parser_string_pool;
+static SymbolPool parser_symbol_pool;
+static TokensHashMap parser_tokens_hashmap;
+
+Status seed_keyword() {
 
     Status hashmap_insertion_status;
     SymbolEntryPointer symbol_insertion_status;
     Semantic token_semantic;
+    Token temp;
 
     const char *keyword_strings[32] = {
         "auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else", "enum",
@@ -27,22 +37,22 @@ Status seed_keyword(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
 
     for (i = 0; i < 32; i++) {
         token_semantic.sub_token_type = i;
-        symbol_insertion_status = insert_symbol(symbol_pool, keyword_strings[i], keyword_lengths[i], token_semantic);
+
+        symbol_insertion_status = insert_symbol(&parser_symbol_pool, keyword_strings[i], keyword_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
             return symbol_insertion_status.status;
         }
 
-        hashmap_insertion_status = insert_item(hashmap, keyword_strings[i], keyword_lengths[i], symbol_insertion_status.symbol_id);
+        hashmap_insertion_status = insert_item(&parser_tokens_hashmap, keyword_strings[i], keyword_lengths[i], symbol_insertion_status.symbol_id);
         if (hashmap_insertion_status != 0) {
             return hashmap_insertion_status;
         }
-
     }
 
     return NO_ERROR;
 }
 
-Status seed_operator(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
+Status seed_operator() {
 
     Status hashmap_insertion_status;
     SymbolEntryPointer symbol_insertion_status;
@@ -66,12 +76,12 @@ Status seed_operator(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
 
     for (i = 0; i < 37; i++) {
         token_semantic.sub_token_type = i;
-        symbol_insertion_status = insert_symbol(symbol_pool, operator_strings[i], operator_lengths[i], token_semantic);
+        symbol_insertion_status = insert_symbol(&parser_symbol_pool, operator_strings[i], operator_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
             return symbol_insertion_status.status;
         }
 
-        hashmap_insertion_status = insert_item(hashmap, operator_strings[i], operator_lengths[i], symbol_insertion_status.symbol_id);
+        hashmap_insertion_status = insert_item(&parser_tokens_hashmap, operator_strings[i], operator_lengths[i], symbol_insertion_status.symbol_id);
         if (hashmap_insertion_status != 0) {
             return hashmap_insertion_status;
         }
@@ -81,7 +91,7 @@ Status seed_operator(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
     return NO_ERROR;
 }
 
-Status seed_punctuation(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
+Status seed_punctuation() {
 
     Status hashmap_insertion_status;
     SymbolEntryPointer symbol_insertion_status;
@@ -104,12 +114,12 @@ Status seed_punctuation(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
 
     for (i = 0; i < 11; i++) {
         token_semantic.sub_token_type = i;
-        symbol_insertion_status = insert_symbol(symbol_pool, punctuation_strings[i], punctuation_lengths[i], token_semantic);
+        symbol_insertion_status = insert_symbol(&parser_symbol_pool, punctuation_strings[i], punctuation_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
             return symbol_insertion_status.status;
         }
 
-        hashmap_insertion_status = insert_item(hashmap, punctuation_strings[i], punctuation_lengths[i], symbol_insertion_status.symbol_id);
+        hashmap_insertion_status = insert_item(&parser_tokens_hashmap, punctuation_strings[i], punctuation_lengths[i], symbol_insertion_status.symbol_id);
         if (hashmap_insertion_status != 0) {
             return hashmap_insertion_status;
         }
@@ -123,9 +133,8 @@ Status seed_punctuation(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
 Status setup_parser() {
 
     Status allocation_status;
-    StringPool parser_string_pool;
-    SymbolPool parser_symbol_pool;
-    TokensHashMap parser_tokens_hashmap;
+    TokenStatus lookup_status;
+
 
     allocation_status = allocate_string_pool(&parser_string_pool, 1024*10);
     if (allocation_status != NO_ERROR) {
@@ -142,9 +151,27 @@ Status setup_parser() {
         return allocation_status;
     }
 
-    seed_keyword(&parser_tokens_hashmap, &parser_symbol_pool);
-    seed_operator(&parser_tokens_hashmap, &parser_symbol_pool);
-    seed_punctuation(&parser_tokens_hashmap, &parser_symbol_pool);
+    seed_keyword();
+    seed_operator();
+    seed_punctuation();
+
+    lookup_status = lookup_item(&parser_tokens_hashmap, "float", 5, 2);
+    printf("%d\n", lookup_status.token.sub_token_type);
+
+
+    return NO_ERROR;
+}
+
+Status start_parser(FileString *file_string) {
+    Token token_recieved;
+    size_t i;
+
+/*     for (i = 0; i < 1; i++) {
+        token_recieved = scan_parser(&parser_tokens_hashmap, file_string);
+        printf("%d \n",token_recieved.sub_token_type);
+         print_token(token_recieved);
+    }  */
+
 
     return NO_ERROR;
 }

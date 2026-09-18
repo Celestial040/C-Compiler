@@ -85,6 +85,7 @@ TestStatusStruct test_tokens_hashmap() {
         return test_status;
     }
 
+
     if (result_token.token_type != TOKEN_KEYWORD || result_token.sub_token_type != INT ) {
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
         test_status.message = "Semantic token expected mismatch\n";
@@ -118,6 +119,26 @@ TestStatusStruct test_tokens_hashmap() {
             return test_status;
         }
     }
+
+    free_hashmap(&tokens_hashmap_test);
+
+    if (tokens_hashmap_test.slots !=  NULL || tokens_hashmap_test.capacity != 0 || tokens_hashmap_test.count != 0) {
+        test_status.status = TEST_FAILED_EXPECT_MISMATCH;
+        test_status.message = "Tokens hashmap not freed correctly";
+        return test_status;
+    }
+
+    if (tokens_hashmap_test.symbol_pool != NULL ||symbol_pool_test.capacity != 0 || symbol_pool_test.count != 0) {
+        test_status.status = TEST_FAILED_EXPECT_MISMATCH;
+        test_status.message = "Symbol pool inside tokens hashmap not freed correctly";
+        return test_status;
+    }
+    if (string_pool_test.start_pointer !=  NULL || string_pool_test.capacity != 0 || string_pool_test.used != 0) {
+        test_status.status = TEST_FAILED_EXPECT_MISMATCH;
+        test_status.message = "String pool inside symbol pool not freed correctly";
+        return test_status;
+    }
+
 
     return test_status;
 }

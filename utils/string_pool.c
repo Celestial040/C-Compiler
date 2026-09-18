@@ -18,7 +18,7 @@ Status allocate_string_pool(StringPool *string_pool, size_t size_requested) {
 }
 
 Status reallocate_string_pool(StringPool *string_pool, size_t size_requested) {
-    char *temp = realloc(string_pool->start_pointer, size_requested);
+    char *temp = realloc(string_pool->start_pointer, sizeof(char) * size_requested);
     if (temp == NULL) {
         return ALLOCATION_ERROR;
     }
@@ -43,7 +43,7 @@ StringPoolPointer insert_string(StringPool *string_pool, const char *string, con
         if (string_len + 1 > requested_size) {
             requested_size = string_len * 2;
         }
-        reallocation_status = reallocate_string_pool(string_pool, sizeof(char) * requested_size);
+        reallocation_status = reallocate_string_pool(string_pool, requested_size);
         if (reallocation_status != NO_ERROR) {
             return_pointer.status = reallocation_status;
             return return_pointer;

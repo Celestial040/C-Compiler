@@ -16,7 +16,9 @@ TEST_SRCS := unit_test/main.c \
              utils/string_pool.c \
              utils/symbol_pool.c \
              utils/file_loader.c \
+             utils/char_manip.c \
              utils/new_parser.c \
+             utils/new_lexer.c \
              utils/fnv1a32.c \
              utils/status.c
 
@@ -36,4 +38,4 @@ legacy: $(TEST_SRCS) $(TEST_HEADERS)
 	gcc -O0 -std=c89 -pedantic-errors $(INC_FLAGS) $(TEST_SRCS)  -o ./output/main_legacy
 
 test: $(TEST_SRCS) $(TEST_HEADERS)
-	gcc -std=c99 $(INC_FLAGS) -g $(TEST_SRCS) -o ./output/main_test
+	gcc -O0 -std=c89 -pedantic-errors $(INC_FLAGS) -g $(TEST_SRCS) -o ./output/main_test

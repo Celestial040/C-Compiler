@@ -68,6 +68,8 @@ TestStatusStruct test_symbol_pool() {
     }
 
     created_entry = symbol_pool_test.entries[symbol_insertion_status.symbol_id];
+
+
     if (created_entry.string_index != 4 || created_entry.string_length != 5) {
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
         test_status.message = "String pointer and length expected mismatch\n";
@@ -88,7 +90,7 @@ TestStatusStruct test_symbol_pool() {
 
     offset_pointer = 10;
 
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 4; i++) {
 
         test_token.sub_token_type=sub_token[i];
         symbol_insertion_status = insert_symbol(&symbol_pool_test, mykeyword[i], keyword_length[i], test_token);

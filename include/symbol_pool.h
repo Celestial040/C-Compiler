@@ -173,4 +173,6 @@ Status allocate_symbol_pool(SymbolPool *symbol_pool, StringPool *string_pool, si
 SymbolEntryPointer insert_symbol(SymbolPool *symbol_pool, const char *string, const size_t string_len, Semantic token_semantic);
 Status free_symbol_pool(SymbolPool *symbol_pool);
 
+void print_token(Token token);
+
 #endif

@@ -1,2 +1,3 @@
-int num=12;
-num+=3;
+int num;
+num = 3;
+num += 10;

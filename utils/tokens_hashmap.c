@@ -193,3 +193,17 @@ TokenStatus lookup_item(TokensHashMap *hashmap, const char *string, const size_t
     returned_status.token = returned_token;
     return returned_status;
 }
+
+
+Status free_hashmap(TokensHashMap *hashmap) {
+    if (hashmap->slots == NULL || hashmap->capacity == 0) {
+        return NULL_POINTER;
+    }
+
+    free(hashmap->slots);
+    free_symbol_pool(hashmap->symbol_pool);
+    hashmap->slots = NULL;
+    hashmap->symbol_pool = NULL;
+    hashmap->count = 0;
+    hashmap->capacity = 0;
+}
