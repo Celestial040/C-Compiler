@@ -38,6 +38,7 @@ Token scan_parser(TokensHashMap *tokens_table, FileString *file_string) {
     while (head < file_string->length) {
         current_char = file_string->start+head;
         head_type = char_type_check(*current_char);
+        printf("mode : %d, %d \n",head_type, tail_type);
         printf("%ld , %ld \n", head,tail);
 
         if (head_type != tail_type) {
@@ -67,11 +68,15 @@ Token scan_parser(TokensHashMap *tokens_table, FileString *file_string) {
                         token_result = lookup_result.token;
                         tail = head;
                         tail_type = char_type_check(file_string->start[tail]);
+                        head++;
                         return token_result;
                     }
 
                     token_result.token_type = TOKEN_UNKNOWN;
                     token_result.line = lines;
+                    tail = head;
+                    tail_type = char_type_check(file_string->start[tail]);
+                    head++;
                     return token_result;
 
                 case SYMBOL:
@@ -80,10 +85,14 @@ Token scan_parser(TokensHashMap *tokens_table, FileString *file_string) {
                         token_result = lookup_result.token;
                         tail = head;
                         tail_type = char_type_check(file_string->start[tail]);
+                        head++;
                         return token_result;
                     }
                     token_result.token_type = TOKEN_UNKNOWN;
                     token_result.line = lines;
+                    tail = head;
+                    tail_type = char_type_check(file_string->start[tail]);
+                    head++;
                     return token_result;
 
                 case STRING_LITERAL:
