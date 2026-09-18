@@ -75,7 +75,7 @@ TestStatusStruct test_string_pool() {
     }
 
     memcpy(world, "world", 6);
-    world[6] = '\0';
+    world[5] = '\0';
     insertion_status = insert_string(&string_pool_test, world, 5);
 
     if (string_pool_test.used != 5+1+5+1 || memcmp(string_pool_test.start_pointer + 5 + 1, world, 5) != 0) {

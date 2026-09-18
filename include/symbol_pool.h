@@ -19,6 +19,10 @@ enum {
     TOKEN_UNKNOWN
 };
 
+enum {
+    IDENTIFIER_UNKNOWN = 199
+};
+
 typedef uint8_t KeywordID;
 enum {
     AUTO,
@@ -52,7 +56,7 @@ enum {
     UNSIGNED,
     VOID,
     VOLATILE,
-    WHILE
+    WHILE,
 };
 
 typedef uint8_t OperatorID;

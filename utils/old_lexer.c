@@ -1,14 +1,4 @@
-/* #include "char_manip.h"
-#include "file_loader.h"
-#include "flat_array_hashmap.h"
-#include "string_arena_allocator.h"
-#include "token.h"
-#include "status.h"
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
-#include "lexer.h"
-
+/*
 typedef enum CharType {
     WHITESPACE,
     ALPHANUMERIC,
@@ -113,4 +103,5 @@ Token scan(TablesGroup *working_table, FileString *file_string) {
 
     return (Token) {.category = UNKNOWN};
 }
+
  */

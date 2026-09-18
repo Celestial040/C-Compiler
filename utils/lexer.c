@@ -26,7 +26,7 @@ CharType char_type_check(const char target) {
     }
 }
 
-Token scan_parser(TokensHashMap *tokens_table, FileString *file_string) {
+Token lexer_scan(TokensHashMap *tokens_table, FileString *file_string) {
     static size_t head, tail  = 0;
     static char *current_char = NULL;
     static CharType head_type, tail_type = WHITESPACE;

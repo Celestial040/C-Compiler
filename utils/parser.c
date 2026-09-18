@@ -161,7 +161,7 @@ Status start_parser(FileString *file_string) {
     size_t i;
 
     for (i = 0; i < 7; i++) {
-        token_recieved = scan_parser(&parser_tokens_hashmap, file_string);
+        token_recieved = lexer_scan(&parser_tokens_hashmap, file_string);
         print_token(token_recieved);
     }
 
