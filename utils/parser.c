@@ -1,130 +1,169 @@
-#include "parser.h"
-#include "file_loader.h"
-#include "flat_array_hashmap.h"
+
 #include "status.h"
-#include "string_arena_allocator.h"
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
+#include "string_pool.h"
+#include "symbol_pool.h"
+#include "tokens_hashmap.h"
 #include "lexer.h"
-#include "token.h"
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+#include "parser.h"
 
-Status seed_keyword_table(HashMap *keyword_table,StringArenaMemory *string_arena) {
+static StringPool parser_string_pool;
+static SymbolPool parser_symbol_pool;
+static TokensHashMap parser_tokens_hashmap;
 
-    Status status;
-    StringArenaPointer arena_pointer;
+Status seed_keyword() {
 
-    static const char *keyword_strings[] = {
+    Status hashmap_insertion_status;
+    SymbolEntryPointer symbol_insertion_status;
+    Semantic token_semantic;
+    Token temp;
+
+    const char *keyword_strings[32] = {
         "auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else", "enum",
         "extern", "float", "for", "goto", "if", "int", "long", "register", "return", "short", "signed",
-        "sizeof", "static", "struct", "switch", "typedef", "union", "unsigned", "void", "volatile", "while",
-        "inline", "_Bool", "restrict", "_Complex", "_Imaginary",
+        "sizeof", "static", "struct", "switch", "typedef", "union", "unsigned", "void", "volatile", "while"
     };
 
-    static const size_t keyword_lengths[] = {
-        4, 5, 4, 4, 5, 8, 7, 2, 6, 4, 4, 6, 5, 3, 4, 2, 3, 4, 8, 6, 5, 6, 6, 6, 6, 6, 7, 5, 8, 4, 8, 5,
-        6, 5, 8, 8, 10,
+    const size_t keyword_lengths[32] = {
+        4, 5, 4, 4, 5, 8, 7, 2, 6, 4, 4, 6, 5, 3, 4, 2, 3, 4, 8, 6, 5, 6, 6, 6, 6, 6, 7, 5, 8, 4, 8, 5
     };
 
-    for (size_t i = 0; i < 37; i++) {
-        arena_pointer = insert_string_to_arena(string_arena, keyword_strings[i], keyword_lengths[i]);
-        if (arena_pointer.status != NO_ERROR) {
-            return status;
+    size_t i;
+
+    token_semantic.symbol_type = SYMBOL_KEYWORD;
+    token_semantic.token_type = TOKEN_KEYWORD;
+
+    for (i = 0; i < 32; i++) {
+        token_semantic.sub_token_type = i;
+
+        symbol_insertion_status = insert_symbol(&parser_symbol_pool, keyword_strings[i], keyword_lengths[i], token_semantic);
+        if (symbol_insertion_status.status != 0 ) {
+            return symbol_insertion_status.status;
         }
-        status = insert_item(keyword_table, arena_pointer.string_pointer, keyword_lengths[i],(Token) {.category = KEYWORD, .data.keyword = (Keyword) i});
-        if (status != 0) return status;
+
+        hashmap_insertion_status = insert_item(&parser_tokens_hashmap, keyword_strings[i], keyword_lengths[i], symbol_insertion_status.symbol_id);
+        if (hashmap_insertion_status != 0) {
+            return hashmap_insertion_status;
+        }
     }
 
     return NO_ERROR;
 }
 
-Status seed_operator_table(HashMap *operator_table, StringArenaMemory *string_arena) {
+Status seed_operator() {
 
-    Status status;
-    StringArenaPointer arena_pointer;
+    Status hashmap_insertion_status;
+    SymbolEntryPointer symbol_insertion_status;
+    Semantic token_semantic;
 
-    static const char *operator_strings[] = {
+
+    const char *operator_strings[37] = {
         "+", "-", "*", "/", "%", "++", "--", "=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=",
-        "==", "!=", "<", ">", "<=", ">=", "&&", "||", "!", "&", "|", "^", "~", "<<", ">>", "->", ".", "?",
+        "==", "!=", "<", ">", "<=", ">=", "&&", "||", "!", "&", "|", "^", "~", "<<", ">>", "->", ".", "?", ","
     };
 
-    static const size_t operator_lengths[] = {
-        1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1,
+    const size_t operator_lengths[37] = {
+        1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1
     };
 
-    for (size_t i = 0; i < 36; i++) {
-        arena_pointer = insert_string_to_arena(string_arena, operator_strings[i], operator_lengths[i]);
-        if (arena_pointer.status != NO_ERROR) {
-            return status;
+    size_t i;
+
+    token_semantic.symbol_type = SYMBOL_OPERATOR;
+    token_semantic.token_type = TOKEN_OPERATOR;
+
+
+    for (i = 0; i < 37; i++) {
+        token_semantic.sub_token_type = i;
+        symbol_insertion_status = insert_symbol(&parser_symbol_pool, operator_strings[i], operator_lengths[i], token_semantic);
+        if (symbol_insertion_status.status != 0 ) {
+            return symbol_insertion_status.status;
         }
-        status = insert_item(operator_table, arena_pointer.string_pointer, operator_lengths[i], (Token) {.category = OPERATOR, .data.operator = (Operator) i});
-        if (status != 0) return status;
+
+        hashmap_insertion_status = insert_item(&parser_tokens_hashmap, operator_strings[i], operator_lengths[i], symbol_insertion_status.symbol_id);
+        if (hashmap_insertion_status != 0) {
+            return hashmap_insertion_status;
+        }
+
     }
 
     return NO_ERROR;
 }
 
-Status seed_punctuation_table(HashMap *punctuation_table, StringArenaMemory *string_arena) {
+Status seed_punctuation() {
 
-    Status status;
-    StringArenaPointer arena_pointer;
+    Status hashmap_insertion_status;
+    SymbolEntryPointer symbol_insertion_status;
+    Semantic token_semantic;
 
-    static const char *punctuation_strings[] = {
-        "(", ")", "[", "]", "{", "}", ",", ";", ":", "...", "#", "##",
+
+    const char *punctuation_strings[11] = {
+        "(", ")", "[", "]", "{", "}", ";", ":", "...", "#", "##",
     };
 
-    static const size_t punctuation_lengths[] = {
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 2,
+    const size_t punctuation_lengths[11] = {
+        1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 2,
     };
 
-    for (size_t i = 0; i < 12; i++) {
-        arena_pointer = insert_string_to_arena(string_arena, punctuation_strings[i], punctuation_lengths[i]);
-        if (arena_pointer.status != NO_ERROR) {
-            return status;
+    size_t i;
+
+    token_semantic.symbol_type = SYMBOL_PUNCTUATION;
+    token_semantic.token_type = TOKEN_PUNCTUATION;
+
+
+    for (i = 0; i < 11; i++) {
+        token_semantic.sub_token_type = i;
+        symbol_insertion_status = insert_symbol(&parser_symbol_pool, punctuation_strings[i], punctuation_lengths[i], token_semantic);
+        if (symbol_insertion_status.status != 0 ) {
+            return symbol_insertion_status.status;
         }
-        status = insert_item(punctuation_table, arena_pointer.string_pointer, punctuation_lengths[i], (Token) {.category = PUNCTUATION, .data.punctuation = (Punctuation) i});
-        if (status != 0) return status;
+
+        hashmap_insertion_status = insert_item(&parser_tokens_hashmap, punctuation_strings[i], punctuation_lengths[i], symbol_insertion_status.symbol_id);
+        if (hashmap_insertion_status != 0) {
+            return hashmap_insertion_status;
+        }
+
     }
 
     return NO_ERROR;
 }
 
-Status tables_init(TablesGroup *tables_group) {
-    Status table_creation_status[3] = { seed_keyword_table(&tables_group->keyword_table,tables_group->string_arena),
-                                        seed_operator_table(&tables_group->operator_table,tables_group->string_arena),
-                                        seed_punctuation_table(&tables_group->punctuation_table,tables_group->string_arena)};
 
-    for (size_t i = 0; i < 3; i++) if (table_creation_status[i] != 0) return table_creation_status[i];
+Status setup_parser() {
+
+    Status allocation_status;
+
+    allocation_status = allocate_string_pool(&parser_string_pool, 1024*10);
+    if (allocation_status != NO_ERROR) {
+        return allocation_status;
+    }
+
+    allocation_status = allocate_symbol_pool(&parser_symbol_pool, &parser_string_pool, 1024*2);
+    if (allocation_status != NO_ERROR) {
+        return allocation_status;
+    }
+
+    allocation_status = allocate_hashmap(&parser_tokens_hashmap, &parser_symbol_pool, 1024*2);
+    if (allocation_status != NO_ERROR) {
+        return allocation_status;
+    }
+
+    seed_keyword();
+    seed_operator();
+    seed_punctuation();
+
     return NO_ERROR;
 }
 
-Status parser_start(StringArenaMemory *string_arena, FileString *file_string) {
-    // TablesGroup tables_group;
-    // tables_group.string_arena = string_arena;
-    // Status tables_status[4];
+Status start_parser(FileString *file_string) {
+    Token token_recieved;
+    size_t i;
 
-    // tables_status[0] = create_hashmap(&tables_group.keyword_table, 34*2);
-    // tables_status[1] = create_hashmap(&tables_group.operator_table, 36*2);
-    // tables_status[2] = create_hashmap(&tables_group.punctuation_table, 12*2);
-    // tables_status[3] = create_hashmap(&tables_group.symbol_table, 2048*2);
+    for (i = 0; i < 7; i++) {
+        token_recieved = scan_parser(&parser_tokens_hashmap, file_string);
+        print_token(token_recieved);
+    }
 
-    // for(size_t i = 0; i < 4; i++) {
-    //     if (tables_status[i] != NO_ERROR) {
-    //         return tables_status[i];
-    //     };
-    // }
-
-    // Status status;
-    // status = tables_init(&tables_group);
-    // if (status != 0) return status;
-
-    // Token token;
-
-    // for (uint8_t i = 0; i < 9; i++) {
-    //     token = scan(&tables_group, file_string);
-    //     print_token_detail(token);
-    // }
-
-
-    // return NO_ERROR;
+    return NO_ERROR;
 }

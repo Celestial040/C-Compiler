@@ -1,10 +1,10 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef NEW_PARSER_H
+#define NEW_PARSER_H
 
 #include "file_loader.h"
 #include "status.h"
-#include "string_arena_allocator.h"
 
-Status parser_start(StringArenaMemory *string_arena, FileString *file_string);
+Status setup_parser();
+Status start_parser(FileString *file_string);
 
 #endif

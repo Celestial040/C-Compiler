@@ -1,5 +1,5 @@
 #include "file_loader.h"
-#include "new_parser.h"
+#include "parser.h"
 #include "status.h"
 #include <stddef.h>
 #include <stdio.h>

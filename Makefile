@@ -1,10 +1,14 @@
 SRCS := main.c \
-        utils/flat_array_hashmap.c \
-        utils/string_arena_allocator.c \
-        utils/file_loader.c \
-        utils/parser.c \
-        utils/lexer.c \
-        utils/xxhash.c
+		utils/tokens_hashmap.c \
+		utils/string_pool.c \
+		utils/symbol_pool.c \
+		utils/file_loader.c \
+		utils/char_manip.c \
+		utils/parser.c \
+		utils/lexer.c \
+		utils/fnv1a32.c \
+		utils/status.c
+
 
 TEST_SRCS := unit_test/main.c \
              unit_test/string_pool_test.c \
@@ -17,8 +21,8 @@ TEST_SRCS := unit_test/main.c \
              utils/symbol_pool.c \
              utils/file_loader.c \
              utils/char_manip.c \
-             utils/new_parser.c \
-             utils/new_lexer.c \
+             utils/parser.c \
+             utils/lexer.c \
              utils/fnv1a32.c \
              utils/status.c
 
@@ -35,7 +39,7 @@ release: $(SRCS) $(HEADERS)
 	gcc -O2 -march=native $(INC_FLAGS) $(SRCS) -o ./output/main
 
 legacy: $(TEST_SRCS) $(TEST_HEADERS)
-	gcc -O0 -std=c89 -pedantic-errors $(INC_FLAGS) $(TEST_SRCS)  -o ./output/main_legacy
+	gcc -O2 -march=native -std=c89 -pedantic-errors $(INC_FLAGS) $(TEST_SRCS)  -o ./output/main_legacy
 
 test: $(TEST_SRCS) $(TEST_HEADERS)
 	gcc -O0 -std=c89 -pedantic-errors $(INC_FLAGS) -g $(TEST_SRCS) -o ./output/main_test
