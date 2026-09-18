@@ -28,7 +28,8 @@ Status reallocate_symbol_pool(SymbolPool *symbol_pool, size_t size_requested) {
 }
 
 SymbolEntryPointer insert_symbol(SymbolPool *symbol_pool, const char *string, const size_t string_len, Semantic token_semantic) {
-    SymbolEntryPointer return_pointer = {.status = NO_ERROR, .symbol_id= 0};
+    SymbolEntryPointer return_pointer = {NO_ERROR, 0};
+    StringPoolPointer string_pointer;
 
     if (symbol_pool->count + 1 >= symbol_pool->capacity) {
         Status reallocation_status = reallocate_symbol_pool(symbol_pool, symbol_pool->capacity*2);
@@ -39,7 +40,7 @@ SymbolEntryPointer insert_symbol(SymbolPool *symbol_pool, const char *string, co
     }
 
     return_pointer.symbol_id = symbol_pool->count;
-    StringPoolPointer string_pointer = insert_string(symbol_pool->string_pool, string, string_len);
+    string_pointer = insert_string(symbol_pool->string_pool, string, string_len);
     symbol_pool->entries[symbol_pool->count].string_index = string_pointer.string_start;
     symbol_pool->entries[symbol_pool->count].string_length = string_pointer.string_length;
     symbol_pool->entries[symbol_pool->count].semantic = token_semantic;

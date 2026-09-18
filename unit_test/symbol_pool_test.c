@@ -16,14 +16,15 @@ TestStatusStruct test_symbol_pool() {
 
     SymbolEntry created_entry;
 
-    Semantic test_token = {SYMBOL_KEYWORD, TOKEN_KEYWORD, INT};
+    Semantic test_token = {TOKEN_KEYWORD, INT, SYMBOL_KEYWORD};
     SymbolEntryPointer symbol_insertion_status;
 
     const char *mykeyword[4] = {"void","double","char","long"};
     const size_t keyword_length[4] = {4,6,4,4};
     const uint8_t sub_token[4] = {VOID, DOUBLE, CHAR, LONG};
 
-
+    size_t i;
+    size_t offset_pointer;
 
     allocation_status = allocate_string_pool(&string_pool_test, 8);
     allocation_status = allocate_symbol_pool(&symbol_pool_test, &string_pool_test , 2);
@@ -85,8 +86,8 @@ TestStatusStruct test_symbol_pool() {
         return test_status;
     }
 
-    size_t i;
-    size_t offset_pointer = 10;
+    offset_pointer = 10;
+
     for (i = 0; i < 2; i++) {
 
         test_token.sub_token_type=sub_token[i];
@@ -126,7 +127,6 @@ TestStatusStruct test_symbol_pool() {
         test_status.message = "String pool inside symbol pool not freed correctly";
         return test_status;
     }
-
 
     return test_status;
 }

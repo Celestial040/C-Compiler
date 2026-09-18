@@ -7,9 +7,17 @@
 
 TestStatusStruct test_string_pool() {
 
-    TestStatusStruct test_status = {.status=TEST_SUCCESS, .message="String Pool Test Success \n"};
+    TestStatusStruct test_status = {TEST_SUCCESS, "String Pool Test Success \n"};
     StringPool string_pool_test;
-    Status allocation_status = allocate_string_pool(&string_pool_test, 8);
+    Status allocation_status;
+    StringPoolPointer insertion_status;
+
+    const char *hello = "Hello";
+    char *world = (char *) malloc(sizeof(char) * 6);
+    const char *myname = "My name is yoshikage kira";
+
+
+    allocation_status = allocate_string_pool(&string_pool_test, 8);
 
     if (allocation_status != NO_ERROR) {
         status_print(allocation_status);
@@ -23,7 +31,7 @@ TestStatusStruct test_string_pool() {
         return test_status;
     }
 
-    StringPoolPointer insertion_status = insert_string(&string_pool_test, "hello", 0);
+    insertion_status = insert_string(&string_pool_test, "hello", 0);
 
     if (insertion_status.status != STRING_EMPTY) {
         test_status.status = TEST_FAILED_EXPECT_MISMATCH;
@@ -37,8 +45,6 @@ TestStatusStruct test_string_pool() {
         test_status.message = "Empty string guard failed (2)\n";
         return test_status;
     }
-
-    const char *hello = "Hello";
 
     insertion_status = insert_string(&string_pool_test, hello, 5);
     if (string_pool_test.used != 5+1 || memcmp(string_pool_test.start_pointer, hello, 5) != 0) {
@@ -60,9 +66,6 @@ TestStatusStruct test_string_pool() {
         test_status.message = "The memory isnt persistent (1)\n";
         return test_status;
     }
-
-
-    char *world = (char *) malloc(sizeof(char) * 6);
 
     insertion_status = insert_string(&string_pool_test, world, 5);
     if (insertion_status.status != STRING_EMPTY) {
@@ -102,7 +105,6 @@ TestStatusStruct test_string_pool() {
         return test_status;
     }
 
-    const char *myname = "My name is yoshikage kira";
     insertion_status = insert_string(&string_pool_test, myname, 25);
 
     if (insertion_status.status != NO_ERROR) {

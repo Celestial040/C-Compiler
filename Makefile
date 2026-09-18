@@ -33,7 +33,7 @@ release: $(SRCS) $(HEADERS)
 	gcc -O2 -march=native $(INC_FLAGS) $(SRCS) -o ./output/main
 
 legacy: $(TEST_SRCS) $(TEST_HEADERS)
-	gcc -O0 -std=c89 $(INC_FLAGS) $(TEST_SRCS)  -o ./output/main_legacy
+	gcc -O0 -std=c89 -pedantic-errors $(INC_FLAGS) $(TEST_SRCS)  -o ./output/main_legacy
 
 test: $(TEST_SRCS) $(TEST_HEADERS)
 	gcc -std=c99 $(INC_FLAGS) -g $(TEST_SRCS) -o ./output/main_test

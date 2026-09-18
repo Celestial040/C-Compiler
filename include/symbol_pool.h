@@ -16,7 +16,7 @@ enum {
     TOKEN_LITERAL_FLOAT,
     TOKEN_LITERAL_STRING,
     TOKEN_EOF,
-    TOKEN_UNKNOWN,
+    TOKEN_UNKNOWN
 };
 
 typedef uint8_t KeywordID;
@@ -93,7 +93,7 @@ enum {
     ARROW,
     DOT,
     QUESTION,
-    COMMA,
+    COMMA
 };
 
 typedef uint8_t PunctuationID;
@@ -108,7 +108,7 @@ enum {
     COLON,
     ELLIPSIS,
     HASH,
-    DOUBLE_HASH,
+    DOUBLE_HASH
 };
 
 

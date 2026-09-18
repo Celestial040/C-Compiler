@@ -11,7 +11,7 @@ typedef enum Status {
     ITEM_FOUND,
     ITEM_ALREADY_EXIST,
     ARRAY_FULL,
-    STRING_EMPTY,
+    STRING_EMPTY
 } Status;
 
 

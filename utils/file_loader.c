@@ -5,13 +5,17 @@
 #include "file_loader.h"
 
 Status read_file(const char *filename, FileString *output) {
-    FILE *file_pointer = fopen(filename, "rb");
+    FILE *file_pointer;
+    char *buffer;
+    long length;
+
+    file_pointer = fopen(filename, "rb");
     if (file_pointer == NULL) {
         return FILE_NOT_FOUND;
     }
 
     fseek(file_pointer, 0, SEEK_END);
-    long length = ftell(file_pointer);
+    length = ftell(file_pointer);
     fseek(file_pointer, 0, SEEK_SET);
 
     if (length < 0) {
@@ -19,7 +23,7 @@ Status read_file(const char *filename, FileString *output) {
         return READ_ERROR;
     }
 
-    char *buffer = (char*) malloc(sizeof(char) * (length+1));
+    buffer = (char*) malloc(sizeof(char) * (length+1));
     if (buffer == NULL) {
         fclose(file_pointer);
         return ALLOCATION_ERROR;

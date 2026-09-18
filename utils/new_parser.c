@@ -9,8 +9,6 @@ Status seed_keyword(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
     Status hashmap_insertion_status;
     SymbolEntryPointer symbol_insertion_status;
     Semantic token_semantic;
-    token_semantic.symbol_type = SYMBOL_KEYWORD;
-    token_semantic.token_type = TOKEN_KEYWORD;
 
     const char *keyword_strings[32] = {
         "auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else", "enum",
@@ -23,6 +21,10 @@ Status seed_keyword(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
     };
 
     size_t i;
+
+    token_semantic.symbol_type = SYMBOL_KEYWORD;
+    token_semantic.token_type = TOKEN_KEYWORD;
+
     for (i = 0; i < 32; i++) {
         token_semantic.sub_token_type = i;
         symbol_insertion_status = insert_symbol(symbol_pool, keyword_strings[i], keyword_lengths[i], token_semantic);
@@ -45,8 +47,7 @@ Status seed_operator(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
     Status hashmap_insertion_status;
     SymbolEntryPointer symbol_insertion_status;
     Semantic token_semantic;
-    token_semantic.symbol_type = SYMBOL_OPERATOR;
-    token_semantic.token_type = TOKEN_OPERATOR;
+
 
     const char *operator_strings[37] = {
         "+", "-", "*", "/", "%", "++", "--", "=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=",
@@ -58,6 +59,11 @@ Status seed_operator(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
     };
 
     size_t i;
+
+    token_semantic.symbol_type = SYMBOL_OPERATOR;
+    token_semantic.token_type = TOKEN_OPERATOR;
+
+
     for (i = 0; i < 37; i++) {
         token_semantic.sub_token_type = i;
         symbol_insertion_status = insert_symbol(symbol_pool, operator_strings[i], operator_lengths[i], token_semantic);
@@ -80,8 +86,7 @@ Status seed_punctuation(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
     Status hashmap_insertion_status;
     SymbolEntryPointer symbol_insertion_status;
     Semantic token_semantic;
-    token_semantic.symbol_type = SYMBOL_PUNCTUATION;
-    token_semantic.token_type = TOKEN_PUNCTUATION;
+
 
     const char *punctuation_strings[11] = {
         "(", ")", "[", "]", "{", "}", ";", ":", "...", "#", "##",
@@ -92,6 +97,11 @@ Status seed_punctuation(TokensHashMap *hashmap, SymbolPool *symbol_pool) {
     };
 
     size_t i;
+
+    token_semantic.symbol_type = SYMBOL_PUNCTUATION;
+    token_semantic.token_type = TOKEN_PUNCTUATION;
+
+
     for (i = 0; i < 11; i++) {
         token_semantic.sub_token_type = i;
         symbol_insertion_status = insert_symbol(symbol_pool, punctuation_strings[i], punctuation_lengths[i], token_semantic);
