@@ -35,10 +35,10 @@ Token scan_parser(TokensHashMap *tokens_table, FileString *file_string) {
     static size_t lines = 1;
 
 
-
     while (head < file_string->length) {
         current_char = file_string->start+head;
         head_type = char_type_check(*current_char);
+        printf("%ld , %ld \n", head,tail);
 
         if (head_type != tail_type) {
             if (head_type == ALPHANUMERIC && is_numeric(*current_char)) {
@@ -55,11 +55,10 @@ Token scan_parser(TokensHashMap *tokens_table, FileString *file_string) {
             }
 
             switch (tail_type) {
-
                 case WHITESPACE:
-                    head++;
                     tail = head;
                     tail_type = char_type_check(file_string->start[tail]);
+                    head++;
                     continue;
 
                 case ALPHANUMERIC:
@@ -69,32 +68,28 @@ Token scan_parser(TokensHashMap *tokens_table, FileString *file_string) {
                         tail = head;
                         tail_type = char_type_check(file_string->start[tail]);
                         return token_result;
-                    }  else {
-                        token_result.token_type = TOKEN_UNKNOWN;
-                        token_result.line = lines;
+                    }
+
+                    token_result.token_type = TOKEN_UNKNOWN;
+                    token_result.line = lines;
+                    return token_result;
+
+                case SYMBOL:
+                    lookup_result = lookup_item(tokens_table, file_string->start+tail , head - tail, lines);
+                    if (lookup_result.status == NO_ERROR) {
+                        token_result = lookup_result.token;
+                        tail = head;
+                        tail_type = char_type_check(file_string->start[tail]);
                         return token_result;
                     }
-
-/*                 case SYMBOL:
-                    lookup_result = find_item(&working_table->operator_table,file_string->start+tail, head-tail);
-                    if (lookup_result.status == NO_ERROR) {
-                        tail = head;
-                        tail_type = char_type_check(file_string->start[tail]);
-                        return (Token)  {.category = OPERATOR, .data.operator=lookup_result.node_pointer->token.data.operator};
-                    }
-
-                    lookup_result = find_item(&working_table->punctuation_table,file_string->start+tail, head-tail);
-                    if (lookup_result.status == NO_ERROR) {
-                        tail = head;
-                        tail_type = char_type_check(file_string->start[tail]);
-                        return (Token)  {.category = PUNCTUATION, .data.punctuation=lookup_result.node_pointer->token.data.punctuation};
-                    }
-                    break;
+                    token_result.token_type = TOKEN_UNKNOWN;
+                    token_result.line = lines;
+                    return token_result;
 
                 case STRING_LITERAL:
                     break;
 
-                case NUMERIC_LITERAL:
+/*                 case NUMERIC_LITERAL:
                     arena_pointer = insert_string_to_arena(working_table->string_arena,file_string->start+tail, head-tail);
                     tail = head;
                     tail_type = char_type_check(file_string->start[tail]);

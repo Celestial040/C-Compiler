@@ -133,8 +133,6 @@ Status seed_punctuation() {
 Status setup_parser() {
 
     Status allocation_status;
-    TokenStatus lookup_status;
-
 
     allocation_status = allocate_string_pool(&parser_string_pool, 1024*10);
     if (allocation_status != NO_ERROR) {
@@ -155,10 +153,6 @@ Status setup_parser() {
     seed_operator();
     seed_punctuation();
 
-    lookup_status = lookup_item(&parser_tokens_hashmap, "float", 5, 2);
-    printf("%d\n", lookup_status.token.sub_token_type);
-
-
     return NO_ERROR;
 }
 
@@ -166,11 +160,11 @@ Status start_parser(FileString *file_string) {
     Token token_recieved;
     size_t i;
 
-/*     for (i = 0; i < 1; i++) {
+
+    for (i = 0; i < 3; i++) {
         token_recieved = scan_parser(&parser_tokens_hashmap, file_string);
-        printf("%d \n",token_recieved.sub_token_type);
-         print_token(token_recieved);
-    }  */
+        print_token(token_recieved);
+    }
 
 
     return NO_ERROR;
