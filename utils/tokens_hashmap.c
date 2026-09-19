@@ -1,8 +1,8 @@
 #include "tokens_hashmap.h"
 #include "fnv1a32.h"
 #include "status.h"
-#include "string_dynamic_array.h"
-#include "symbol_dynamic_array.h"
+#include "dynamic_array/string_dynamic_array.h"
+#include "dynamic_array/symbol_dynamic_array.h"
 #include "bool.h"
 #include <stddef.h>
 #include <stdint.h>
@@ -209,4 +209,6 @@ Status free_hashmap(TokensHashMap *hashmap) {
     hashmap->symbol_dynamic_array = NULL;
     hashmap->count = 0;
     hashmap->capacity = 0;
+
+    return NO_ERROR;
 }

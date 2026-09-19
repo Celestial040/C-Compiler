@@ -1,4 +1,4 @@
-#include "struct_members_dynamic_array.h"
+#include "dynamic_array/struct_members_dynamic_array.h"
 #include "status.h"
 #include <stddef.h>
 #include <stdlib.h>

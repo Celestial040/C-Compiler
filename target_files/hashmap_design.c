@@ -37,7 +37,7 @@ enum {
 // ==========================================
 
 typedef struct Token {
-    uint32_t symbol_id;  // 32-bit ID pointing to SymbolPool index
+    uint32_t symbol_id;  // 32-bit ID pointing to SymbolDynamicArray index
     TokenKind kind;      // High-level token classification
     uint8_t sub_kind;    // Keyword ID, Operator ID, or Punctuation ID
     uint16_t line;       // Line number for error reporting
@@ -64,7 +64,7 @@ typedef struct SymbolEntry {
 
 typedef struct HashSlot {
     uint32_t hash;        // 32-bit string hash (e.g. FNV-1a)
-    uint32_t symbol_id;   // Index into SymbolPool.entries array
+    uint32_t symbol_id;   // Index into SymbolDynamicArray.entries array
     uint16_t probe_count; // Distance from ideal bucket (Robin Hood)
     uint16_t pad;         // Alignment padding
     uint32_t reserved;    // Future expansion / cache boundary alignment
@@ -81,9 +81,9 @@ typedef struct StringHashMap {
     uint32_t mask;        // Precalculated capacity - 1 for fast bitwise AND
 } StringHashMap;
 
-typedef struct SymbolPool {
+typedef struct SymbolDynamicArray {
     SymbolEntry *entries; // Flat array indexed directly by symbol_id
     uint32_t count;       // Total unique interned strings
     uint32_t capacity;    // Total capacity of entries array
     StringHashMap map;    // Lookup map to convert string -> symbol_id
-} SymbolPool;
+} SymbolDynamicArray;

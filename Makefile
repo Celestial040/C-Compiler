@@ -1,7 +1,7 @@
 SRCS := main.c \
              utils/tokens_hashmap.c \
-             utils/string_dynamic_array.c \
-             utils/symbol_dynamic_array.c \
+             utils/dynamic_array/string_dynamic_array.c \
+             utils/dynamic_array/symbol_dynamic_array.c \
              utils/file_loader.c \
              utils/char_manip.c \
              utils/parser.c \
@@ -10,7 +10,7 @@ SRCS := main.c \
              utils/status.c
 
 
-HEADERS := $(wildcard include/*.h)
+HEADERS := $(wildcard include/*.h include/*/*.h)
 INC_FLAGS := -Iinclude
 
 .PHONY: all release debug
@@ -22,3 +22,6 @@ release: $(SRCS) $(HEADERS)
 
 test: $(SRCS) $(HEADERS)
 	gcc -O0 -march=native -std=c89 -pedantic-errors $(INC_FLAGS) $(SRCS)  -o ./output/main_test
+
+clean:
+	rm -rf build

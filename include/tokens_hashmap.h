@@ -2,7 +2,7 @@
 #define TOKENS_HASHMAP_H
 
 #include "status.h"
-#include "symbol_dynamic_array.h"
+#include "dynamic_array/symbol_dynamic_array.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stddef.h>

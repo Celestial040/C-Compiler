@@ -1,5 +1,5 @@
 #include "status.h"
-#include "variable_dynamic_array.h"
+#include "dynamic_array/variable_dynamic_array.h"
 #include <stddef.h>
 #include <stdlib.h>
 

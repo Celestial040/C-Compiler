@@ -1,5 +1,5 @@
 #include "bool.h"
-#include "symbol_pool.h"
+#include "dynamic_array/symbol_dynamic_array.h"
 #include <stdint.h>
 #include <stdio.h>
 

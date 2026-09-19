@@ -1,7 +1,7 @@
 
 #include "status.h"
-#include "string_dynamic_array.h"
-#include "symbol_dynamic_array.h"
+#include "dynamic_array/string_dynamic_array.h"
+#include "dynamic_array/symbol_dynamic_array.h"
 #include "tokens_hashmap.h"
 #include "lexer.h"
 #include <stddef.h>

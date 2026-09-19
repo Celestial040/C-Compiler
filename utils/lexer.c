@@ -1,17 +1,19 @@
 #include "lexer.h"
 #include "char_manip.h"
 #include "status.h"
-#include "symbol_dynamic_array.h"
+#include "dynamic_array/symbol_dynamic_array.h"
 #include "tokens_hashmap.h"
 #include <stddef.h>
 #include <stdio.h>
+#include <stdnoreturn.h>
 
 typedef enum CharType {
     WHITESPACE,
     ALPHANUMERIC,
     SYMBOL,
     STRING_LITERAL,
-    NUMERIC_LITERAL
+    NUMERIC_LITERAL,
+    FLOAT_LITERAL
 } CharType;
 
 CharType char_type_check(const char target) {
@@ -31,7 +33,7 @@ Token lexer_scan(TokensHashMap *tokens_table, FileString *file_string) {
     static char *current_char = NULL;
     static CharType head_type, tail_type = WHITESPACE;
     static TokenStatus lookup_result;
-    static Token token_result;
+    static Token token_result = {0,TOKEN_UNKNOWN,SYMBOL_NONE,0};
     static size_t lines = 1;
 
 
@@ -98,11 +100,11 @@ Token lexer_scan(TokensHashMap *tokens_table, FileString *file_string) {
                 case STRING_LITERAL:
                     break;
 
-/*                 case NUMERIC_LITERAL:
-                    arena_pointer = insert_string_to_arena(working_table->string_arena,file_string->start+tail, head-tail);
-                    tail = head;
-                    tail_type = char_type_check(file_string->start[tail]);
-                    return (Token) {.category=IDENTIFIER, .data.identifier = {.value = arena_pointer.string_pointer, .value_length = arena_pointer.string_length}}; */
+                case NUMERIC_LITERAL:
+                    break;
+
+                case FLOAT_LITERAL:
+                    break;
 
 
             }
@@ -110,4 +112,5 @@ Token lexer_scan(TokensHashMap *tokens_table, FileString *file_string) {
         }
         head++;
     }
+    return token_result;
 }

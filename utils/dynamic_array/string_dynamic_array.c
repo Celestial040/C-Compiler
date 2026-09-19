@@ -1,4 +1,4 @@
-#include "string_dynamic_array.h"
+#include "dynamic_array/string_dynamic_array.h"
 #include "status.h"
 #include <stddef.h>
 #include <stdio.h>

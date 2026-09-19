@@ -1,4 +1,4 @@
-#include "function_params_dynamic_array.h"
+#include "dynamic_array/function_params_dynamic_array.h"
 #include "status.h"
 #include <stddef.h>
 #include <stdlib.h>
