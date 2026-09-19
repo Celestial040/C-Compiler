@@ -220,19 +220,19 @@ void parser_read(Token token) {
             return;
         }
 
-        if (expect_string_literal(current_token) && expect_semicolon(Token token)) {
+        if (expect_string_literal(prev_token) && expect_semicolon(current_token)) {
             current_token = emptyset;
             prev_token = emptyset;
             counter_for_prev_assign = 0;
             return;
         }
-        if (expect_int_literal(current_token) && expect_semicolon(Token token)) {
+        if (expect_int_literal(prev_token) && expect_semicolon(current_token)) {
             current_token = emptyset;
             prev_token = emptyset;
             counter_for_prev_assign = 0;
             return;
         }
-        if (expect_float_literal(current_token) && expect_semicolon(Token token)) {
+        if (expect_float_literal(prev_token) && expect_semicolon(current_token)) {
             current_token = emptyset;
             prev_token = emptyset;
             counter_for_prev_assign = 0;

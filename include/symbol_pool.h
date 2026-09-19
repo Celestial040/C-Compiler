@@ -3,6 +3,7 @@
 
 #include "status.h"
 #include "string_pool.h"
+#include "variable_list.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -56,7 +57,7 @@ enum {
     UNSIGNED,
     VOID,
     VOLATILE,
-    WHILE,
+    WHILE
 };
 
 typedef uint8_t OperatorID;
@@ -132,6 +133,19 @@ enum {
     SYMBOL_ENUM_CONSTANT
 };
 
+
+typedef uint64_t SymbolAttributes;
+enum {
+    ATTR_CONST       = 1 << 0,
+    ATTR_STATIC      = 1 << 1,
+    ATTR_GLOBAL      = 1 << 2,
+    ATTR_INITIALIZED = 1 << 3,
+    ATTR_USED        = 1 << 4,
+    ATTR_MUTABLE     = 1 << 5,
+    ATTR_EXPORTED    = 1 << 6,
+    ATTR_PARAMETER   = 1 << 7,
+} ;
+
 typedef struct Token {
     size_t symbol_id;
     TokenType token_type;
@@ -149,8 +163,10 @@ typedef struct SymbolEntry {
     size_t string_index;
     size_t string_length;
     size_t scope_depth;
-    void *details;
-    uint64_t added_attributes;
+    union {
+        VariableDetails *variable_details;
+    } details;
+    SymbolAttributes added_attributes;
     Semantic semantic;
 } SymbolEntry;
 
