@@ -4,30 +4,15 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef struct VariableDetails {
-    size_t offset;
-    size_t size;
-} VariableDetails;
-
-typedef struct FunctionParams {
-    size_t offset;
-    size_t size;
-} FunctionParams;
-
 typedef struct FunctionDetails {
     size_t code_offset;
     size_t return_size;
-    FunctionParams *params;
+    size_t start_params_index;
     size_t param_count;
 } FunctionDetails;
 
-typedef struct StructMembers {
-    size_t offset;
-    size_t size;
-} StructMembers;
-
 typedef struct StructDetails {
-    StructMembers *members;
+    size_t start_members_index;
     size_t member_count;
     size_t total_size;
 } StructDetails;
@@ -38,10 +23,9 @@ typedef struct EnumMembers {
 } EnumMembers;
 
 typedef struct EnumDetails {
-    EnumMembers *members;
+    size_t start_members_index;
     size_t member_count;
 } EnumDetails;
-
 
 typedef struct UnionMembers {
     size_t offset;
@@ -49,7 +33,7 @@ typedef struct UnionMembers {
 } UnionMembers;
 
 typedef struct UnionDetails {
-    UnionMembers *members;
+    size_t start_members_index;
     size_t member_count;
     size_t total_size;
 } UnionDetails;

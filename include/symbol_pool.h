@@ -3,7 +3,6 @@
 
 #include "status.h"
 #include "string_pool.h"
-#include "variable_list.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -163,9 +162,7 @@ typedef struct SymbolEntry {
     size_t string_index;
     size_t string_length;
     size_t scope_depth;
-    union {
-        VariableDetails *variable_details;
-    } details;
+    size_t symbol_details;
     SymbolAttributes added_attributes;
     Semantic semantic;
 } SymbolEntry;
