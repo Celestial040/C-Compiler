@@ -1,5 +1,5 @@
-#ifndef FUNCTION_PARAMS_POOL_H
-#define FUNCTION_PARAMS_POOL_H
+#ifndef FUNCTION_PARAMS_DYNAMIC_ARRAY_H
+#define FUNCTION_PARAMS_DYNAMIC_ARRAY_H
 
 #include "status.h"
 #include <stddef.h>
@@ -10,11 +10,11 @@ typedef struct FunctionParams {
     size_t size;
 } FunctionParams;
 
-typedef struct FunctionParamsPool {
+typedef struct FunctionParamsDynamicArray {
     FunctionParams *entries;
     size_t count;
     size_t capacity;
-}FunctionParamsPool;
+}FunctionParamsDynamicArray;
 
 typedef struct FunctionParamsPointer {
     size_t index;

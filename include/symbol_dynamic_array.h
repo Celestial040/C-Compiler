@@ -1,8 +1,8 @@
-#ifndef SYMBOL_POOL_H
-#define SYMBOL_POOL_H
+#ifndef SYMBOL_DYNAMIC_ARRAY_H
+#define SYMBOL_DYNAMIC_ARRAY_H
 
 #include "status.h"
-#include "string_pool.h"
+#include "string_dynamic_array.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -134,7 +134,7 @@ enum {
 
 
 typedef uint64_t SymbolAttributes;
-enum {
+/* enum {
     ATTR_CONST       = 1 << 0,
     ATTR_STATIC      = 1 << 1,
     ATTR_GLOBAL      = 1 << 2,
@@ -144,7 +144,7 @@ enum {
     ATTR_EXPORTED    = 1 << 6,
     ATTR_PARAMETER   = 1 << 7,
 } ;
-
+ */
 typedef struct Token {
     size_t symbol_id;
     TokenType token_type;
@@ -167,12 +167,12 @@ typedef struct SymbolEntry {
     Semantic semantic;
 } SymbolEntry;
 
-typedef struct SymbolPool {
+typedef struct SymbolDynamicArray {
     SymbolEntry *entries;
     size_t count;
     size_t capacity;
-    StringPool *string_pool;
-} SymbolPool;
+    StringDynamicArray *string_dynamic_array;
+} SymbolDynamicArray;
 
 typedef struct SymbolEntryPointer {
     size_t symbol_id;
@@ -186,9 +186,9 @@ typedef struct TokenStatus {
 
 
 
-Status allocate_symbol_pool(SymbolPool *symbol_pool, StringPool *string_pool, size_t size_requested);
-SymbolEntryPointer insert_symbol(SymbolPool *symbol_pool, const char *string, const size_t string_len, Semantic token_semantic);
-Status free_symbol_pool(SymbolPool *symbol_pool);
+Status allocate_symbol_dynamic_array(SymbolDynamicArray *symbol_dynamic_array, StringDynamicArray *string_dynamic_array, size_t size_requested);
+SymbolEntryPointer insert_symbol(SymbolDynamicArray *symbol_dynamic_array, const char *string, const size_t string_len, Semantic token_semantic);
+Status free_symbol_dynamic_array(SymbolDynamicArray *symbol_dynamic_array);
 
 void print_token(Token token);
 

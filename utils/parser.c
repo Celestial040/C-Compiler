@@ -1,7 +1,7 @@
 
 #include "status.h"
-#include "string_pool.h"
-#include "symbol_pool.h"
+#include "string_dynamic_array.h"
+#include "symbol_dynamic_array.h"
 #include "tokens_hashmap.h"
 #include "lexer.h"
 #include <stddef.h>
@@ -9,8 +9,8 @@
 #include <string.h>
 #include "parser.h"
 
-static StringPool parser_string_pool;
-static SymbolPool parser_symbol_pool;
+static StringDynamicArray parser_string_dynamic_array;
+static SymbolDynamicArray parser_symbol_dynamic_array;
 static TokensHashMap parser_tokens_hashmap;
 
 Status seed_keyword() {
@@ -38,7 +38,7 @@ Status seed_keyword() {
     for (i = 0; i < 32; i++) {
         token_semantic.sub_token_type = i;
 
-        symbol_insertion_status = insert_symbol(&parser_symbol_pool, keyword_strings[i], keyword_lengths[i], token_semantic);
+        symbol_insertion_status = insert_symbol(&parser_symbol_dynamic_array, keyword_strings[i], keyword_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
             return symbol_insertion_status.status;
         }
@@ -76,7 +76,7 @@ Status seed_operator() {
 
     for (i = 0; i < 37; i++) {
         token_semantic.sub_token_type = i;
-        symbol_insertion_status = insert_symbol(&parser_symbol_pool, operator_strings[i], operator_lengths[i], token_semantic);
+        symbol_insertion_status = insert_symbol(&parser_symbol_dynamic_array, operator_strings[i], operator_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
             return symbol_insertion_status.status;
         }
@@ -114,7 +114,7 @@ Status seed_punctuation() {
 
     for (i = 0; i < 11; i++) {
         token_semantic.sub_token_type = i;
-        symbol_insertion_status = insert_symbol(&parser_symbol_pool, punctuation_strings[i], punctuation_lengths[i], token_semantic);
+        symbol_insertion_status = insert_symbol(&parser_symbol_dynamic_array, punctuation_strings[i], punctuation_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
             return symbol_insertion_status.status;
         }
@@ -134,17 +134,17 @@ Status setup_parser() {
 
     Status allocation_status;
 
-    allocation_status = allocate_string_pool(&parser_string_pool, 1024*10);
+    allocation_status = allocate_string_dynamic_array(&parser_string_dynamic_array, 1024*10);
     if (allocation_status != NO_ERROR) {
         return allocation_status;
     }
 
-    allocation_status = allocate_symbol_pool(&parser_symbol_pool, &parser_string_pool, 1024*2);
+    allocation_status = allocate_symbol_dynamic_array(&parser_symbol_dynamic_array, &parser_string_dynamic_array, 1024*2);
     if (allocation_status != NO_ERROR) {
         return allocation_status;
     }
 
-    allocation_status = allocate_hashmap(&parser_tokens_hashmap, &parser_symbol_pool, 1024*2);
+    allocation_status = allocate_hashmap(&parser_tokens_hashmap, &parser_symbol_dynamic_array, 1024*2);
     if (allocation_status != NO_ERROR) {
         return allocation_status;
     }

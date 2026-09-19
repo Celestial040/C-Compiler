@@ -2,12 +2,11 @@
 #define TOKENS_HASHMAP_H
 
 #include "status.h"
-#include "symbol_pool.h"
+#include "symbol_dynamic_array.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdint.h>
-
 
 typedef struct HashSlot {
     size_t symbol_id;
@@ -20,10 +19,10 @@ typedef struct TokensHashMap {
     size_t capacity;
     size_t count;
     size_t mask;
-    SymbolPool *symbol_pool;
+    SymbolDynamicArray *symbol_dynamic_array;
 } TokensHashMap;
 
-Status allocate_hashmap(TokensHashMap *hashmap, SymbolPool *symbol_pool, size_t bucket_count);
+Status allocate_hashmap(TokensHashMap *hashmap, SymbolDynamicArray *symbol_dynamic_array, size_t bucket_count);
 Status insert_item(TokensHashMap *hashmap, const char *string, const size_t string_length, size_t symbol_id);
 TokenStatus lookup_item(TokensHashMap *hashmap, const char *string, const size_t string_length, size_t line);
 Status free_hashmap(TokensHashMap *hashmap);

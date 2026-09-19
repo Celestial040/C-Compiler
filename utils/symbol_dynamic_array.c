@@ -1,70 +1,70 @@
-#include "symbol_pool.h"
+#include "symbol_dynamic_array.h"
 #include "status.h"
-#include "string_pool.h"
+#include "string_dynamic_array.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-Status allocate_symbol_pool(SymbolPool *symbol_pool, StringPool *string_pool, size_t size_requested) {
+Status allocate_symbol_dynamic_array(SymbolDynamicArray *symbol_dynamic_array, StringDynamicArray *string_dynamic_array, size_t size_requested) {
     SymbolEntry *symbol_entries = (SymbolEntry *) malloc(sizeof(SymbolEntry) * size_requested);
     if (symbol_entries == NULL) {
         return ALLOCATION_ERROR;
     }
 
-    symbol_pool->capacity = size_requested;
-    symbol_pool->entries = symbol_entries;
-    symbol_pool->count = 0;
-    symbol_pool->string_pool = string_pool;
+    symbol_dynamic_array->capacity = size_requested;
+    symbol_dynamic_array->entries = symbol_entries;
+    symbol_dynamic_array->count = 0;
+    symbol_dynamic_array->string_dynamic_array = string_dynamic_array;
 
     return NO_ERROR;
 }
 
-Status reallocate_symbol_pool(SymbolPool *symbol_pool, size_t size_requested) {
-    SymbolEntry *temp = realloc(symbol_pool->entries, sizeof(SymbolEntry) * size_requested);
+Status reallocate_symbol_dynamic_array(SymbolDynamicArray *symbol_dynamic_array, size_t size_requested) {
+    SymbolEntry *temp = realloc(symbol_dynamic_array->entries, sizeof(SymbolEntry) * size_requested);
     if (temp == NULL) {
         return ALLOCATION_ERROR;
     }
 
-    symbol_pool->entries = temp;
-    symbol_pool->capacity = size_requested;
+    symbol_dynamic_array->entries = temp;
+    symbol_dynamic_array->capacity = size_requested;
     return NO_ERROR;
 }
 
-SymbolEntryPointer insert_symbol(SymbolPool *symbol_pool, const char *string, const size_t string_len, Semantic token_semantic) {
+SymbolEntryPointer insert_symbol(SymbolDynamicArray *symbol_dynamic_array, const char *string, const size_t string_len, Semantic token_semantic) {
     SymbolEntryPointer return_pointer = {NO_ERROR, 0};
-    StringPoolPointer string_pointer;
+    StringDynamicArrayPointer string_pointer;
 
-    if (symbol_pool->count + 1 >= symbol_pool->capacity) {
-        Status reallocation_status = reallocate_symbol_pool(symbol_pool, symbol_pool->capacity*2);
+    if (symbol_dynamic_array->count + 1 >= symbol_dynamic_array->capacity) {
+        Status reallocation_status = reallocate_symbol_dynamic_array(symbol_dynamic_array, symbol_dynamic_array->capacity*2);
         if (reallocation_status != NO_ERROR) {
             return_pointer.status = reallocation_status;
             return return_pointer;
         }
     }
 
-    return_pointer.symbol_id = symbol_pool->count;
-    string_pointer = insert_string(symbol_pool->string_pool, string, string_len);
-    symbol_pool->entries[symbol_pool->count].string_index = string_pointer.string_start;
-    symbol_pool->entries[symbol_pool->count].string_length = string_pointer.string_length;
-    symbol_pool->entries[symbol_pool->count].semantic = token_semantic;
+    return_pointer.symbol_id = symbol_dynamic_array->count;
+    string_pointer = insert_string(symbol_dynamic_array->string_dynamic_array, string, string_len);
+    symbol_dynamic_array->entries[symbol_dynamic_array->count].string_index = string_pointer.string_start;
+    symbol_dynamic_array->entries[symbol_dynamic_array->count].string_length = string_pointer.string_length;
+    symbol_dynamic_array->entries[symbol_dynamic_array->count].semantic = token_semantic;
 
-    symbol_pool->count++;
+    symbol_dynamic_array->count++;
 
     return return_pointer;
 }
 
 
-Status free_symbol_pool(SymbolPool *symbol_pool) {
-    if (symbol_pool->entries == NULL || symbol_pool->capacity == 0) {
+Status free_symbol_dynamic_array(SymbolDynamicArray *symbol_dynamic_array) {
+    if (symbol_dynamic_array->entries == NULL || symbol_dynamic_array->capacity == 0) {
         return NULL_POINTER;
     }
 
-    free(symbol_pool->entries);
-    free_string_pool(symbol_pool->string_pool);
-    symbol_pool->entries = NULL;
-    symbol_pool->string_pool = NULL;
-    symbol_pool->capacity = 0;
-    symbol_pool->count = 0;
+    free(symbol_dynamic_array->entries);
+    free_string_dynamic_array(symbol_dynamic_array->string_dynamic_array);
+    symbol_dynamic_array->entries = NULL;
+    symbol_dynamic_array->string_dynamic_array = NULL;
+    symbol_dynamic_array->capacity = 0;
+    symbol_dynamic_array->count = 0;
 
     return NO_ERROR;
 }

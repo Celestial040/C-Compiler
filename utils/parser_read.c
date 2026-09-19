@@ -2,7 +2,6 @@
 #include "symbol_pool.h"
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 
 typedef uint8_t OperationMode ;
 

@@ -1,5 +1,5 @@
-#ifndef STRUCT_MEMBERS_POOL_H
-#define STRUCT_MEMBERS_POOL_H
+#ifndef STRUCT_MEMBERS_DYNAMIC_ARRAY_H
+#define STRUCT_MEMBERS_DYNAMIC_ARRAY_H
 
 #include "status.h"
 #include <stddef.h>
@@ -9,11 +9,11 @@ typedef struct StructMembers {
     size_t size;
 } StructMembers;
 
-typedef struct StructMembersPool {
+typedef struct StructMembersDynamicArray{
     StructMembers *entries;
     size_t count;
     size_t capacity;
-}StructMembersPool;
+}StructMembersDynamicArray;
 
 typedef struct StructMembersPointer {
     size_t index;
