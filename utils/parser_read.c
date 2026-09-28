@@ -1,5 +1,5 @@
 #include "bool.h"
-#include "dynamic_array/symbol_dynamic_array.h"
+#include "vector/symbol.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -70,10 +70,11 @@ bool expect_float_literal(Token token) {
 }
 
 bool expect_pre_type_var_declare(Token token) {
+    static uint8_t pre_type[5] = {CONST, STATIC, VOLATILE, REGISTER, EXTERN};
     if (expect_keyword(token) == false) {
         return false;
     }
-    static uint8_t pre_type[5] = {CONST, STATIC, VOLATILE, REGISTER, EXTERN};
+
     uint8_t i;
 
     for (i=0; i<5; i++) {
@@ -102,10 +103,11 @@ bool expect_type(Token token) {
 }
 
 bool expect_signable_type(Token token) {
+    static uint8_t pre_type[6] = {CHAR,SHORT,INT,LONG,FLOAT,DOUBLE};
     if (expect_keyword(token) == false) {
         return false;
     }
-    static uint8_t pre_type[6] = {CHAR,SHORT,INT,LONG,FLOAT,DOUBLE};
+
     uint8_t i;
 
     for (i=0; i<6; i++) {
@@ -253,4 +255,4 @@ void parser_read(Token token) {
         return;
     }
 
-};
+}

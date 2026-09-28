@@ -1,8 +1,8 @@
 #include "tokens_hashmap.h"
 #include "fnv1a32.h"
 #include "status.h"
-#include "dynamic_array/string_dynamic_array.h"
-#include "dynamic_array/symbol_dynamic_array.h"
+#include "vector/string.h"
+#include "vector/symbol.h"
 #include "bool.h"
 #include <stddef.h>
 #include <stdint.h>
@@ -11,8 +11,8 @@
 #include <string.h>
 
 
-Status allocate_hashmap(TokensHashMap *hashmap, SymbolDynamicArray *symbol_dynamic_array, size_t bucket_count) {
-    HashSlot *allocated_slot = (HashSlot *) calloc(sizeof(HashSlot),bucket_count);
+Status allocate_hashmap(TokensHashMap *hashmap, SymbolVector *symbol_vector, size_t bucket_count) {
+    HashSlot *allocated_slot = (HashSlot *) calloc(bucket_count,sizeof(HashSlot));
     if (allocated_slot == NULL) {
         return ALLOCATION_ERROR;
     }
@@ -20,19 +20,19 @@ Status allocate_hashmap(TokensHashMap *hashmap, SymbolDynamicArray *symbol_dynam
     hashmap->capacity = bucket_count;
     hashmap->count = 0;
     hashmap->slots = allocated_slot;
-    hashmap->symbol_dynamic_array = symbol_dynamic_array;
+    hashmap->symbol_vector = symbol_vector;
 
     return NO_ERROR;
 }
 
-bool compare_slot(SymbolDynamicArray *symbol_dynamic_array, HashSlot *slot1, HashSlot *slot2) {
+bool compare_slot(SymbolVector *symbol_vector, HashSlot *slot1, HashSlot *slot2) {
 
-    SymbolEntry *slot1_entry = symbol_dynamic_array->entries + slot1->symbol_id;
-    SymbolEntry *slot2_entry = symbol_dynamic_array->entries + slot2->symbol_id;
-    StringDynamicArray *string_dynamic_array = symbol_dynamic_array->string_dynamic_array;
+    SymbolEntry *slot1_entry = symbol_vector->array + slot1->symbol_id;
+    SymbolEntry *slot2_entry = symbol_vector->array + slot2->symbol_id;
+    StringVector *string_vector = symbol_vector->string_vector;
 
     if (slot1_entry->string_length == slot2_entry->string_length &&
-        memcmp(string_dynamic_array+slot1_entry->string_index, string_dynamic_array+slot2_entry->string_index, slot1_entry->string_length) == 0) {
+        memcmp(string_vector+slot1_entry->string_index, string_vector+slot2_entry->string_index, slot1_entry->string_length) == 0) {
         return true;
     }
     return false;
@@ -60,7 +60,7 @@ Status rehash_hashmap(TokensHashMap *hashmap, size_t resize_target_size) {
     size_t target_index;
     size_t hash_offset;
 
-    temp = (HashSlot *) calloc(sizeof(HashSlot),resize_target_size);
+    temp = (HashSlot *) calloc(resize_target_size,sizeof(HashSlot));
 
     if (temp == NULL) {
         return ALLOCATION_ERROR;
@@ -83,7 +83,7 @@ Status rehash_hashmap(TokensHashMap *hashmap, size_t resize_target_size) {
             if (temp[target_index].hash != tempSlot.hash) {
                 continue;
             }
-            if (compare_slot(hashmap->symbol_dynamic_array, temp+target_index, &tempSlot)) {
+            if (compare_slot(hashmap->symbol_vector, temp+target_index, &tempSlot)) {
                 return ITEM_ALREADY_EXIST;
             }
             if (temp[target_index].probe_count < tempSlot.probe_count) {
@@ -130,7 +130,7 @@ Status insert_item(TokensHashMap *hashmap, const char *string, const size_t stri
             tempSlot.probe_count++;
             continue;
         }
-        if (compare_slot(hashmap->symbol_dynamic_array, hashmap->slots+target_index, &tempSlot)) {
+        if (compare_slot(hashmap->symbol_vector, hashmap->slots+target_index, &tempSlot)) {
             return ITEM_ALREADY_EXIST;
         }
         if (hashmap->slots[target_index].probe_count < tempSlot.probe_count) {
@@ -155,8 +155,8 @@ TokenStatus lookup_item(TokensHashMap *hashmap, const char *string, const size_t
     size_t target_index = hash_result % hashmap->capacity;
     uint64_t hash_offset = 0;
 
-    SymbolDynamicArray *symbol_dynamic_array = hashmap->symbol_dynamic_array;
-    StringDynamicArray *string_dynamic_array = symbol_dynamic_array->string_dynamic_array;
+    SymbolVector *symbol_vector = hashmap->symbol_vector;
+    StringVector *string_vector = symbol_vector->string_vector;
 
     Token returned_token;
     TokenStatus returned_status;
@@ -171,13 +171,13 @@ TokenStatus lookup_item(TokensHashMap *hashmap, const char *string, const size_t
         target_slot = &hashmap->slots[target_index];
         symbol_id = target_slot->symbol_id;
 
-        stored_string = string_dynamic_array->start_pointer + symbol_dynamic_array->entries[symbol_id].string_index;
-        stored_length = symbol_dynamic_array->entries[symbol_id].string_length;
+        stored_string = string_vector->start_pointer + symbol_vector->array[symbol_id].string_index;
+        stored_length = symbol_vector->array[symbol_id].string_length;
 
         if (compare_string(string, string_length, stored_string, stored_length)) {
 
-            returned_token.token_type = symbol_dynamic_array->entries[symbol_id].semantic.token_type;
-            returned_token.sub_token_type = symbol_dynamic_array->entries[symbol_id].semantic.sub_token_type;
+            returned_token.token_type = symbol_vector->array[symbol_id].semantic.token_type;
+            returned_token.sub_token_type = symbol_vector->array[symbol_id].semantic.sub_token_type;
             returned_token.symbol_id = symbol_id;
             returned_token.line = line;
 
@@ -204,9 +204,9 @@ Status free_hashmap(TokensHashMap *hashmap) {
     }
 
     free(hashmap->slots);
-    free_symbol_dynamic_array(hashmap->symbol_dynamic_array);
+    free_symbol_vector(hashmap->symbol_vector);
     hashmap->slots = NULL;
-    hashmap->symbol_dynamic_array = NULL;
+    hashmap->symbol_vector = NULL;
     hashmap->count = 0;
     hashmap->capacity = 0;
 

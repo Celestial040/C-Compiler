@@ -1,7 +1,7 @@
 #include "lexer.h"
 #include "char_manip.h"
 #include "status.h"
-#include "dynamic_array/symbol_dynamic_array.h"
+#include "vector/symbol.h"
 #include "tokens_hashmap.h"
 #include <stddef.h>
 #include <stdio.h>
