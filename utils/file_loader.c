@@ -7,7 +7,8 @@
 Status read_file(const char *filename, FileString *output) {
     FILE *file_pointer;
     char *buffer;
-    long length;
+    long file_len;
+    size_t length;
 
     file_pointer = fopen(filename, "rb");
     if (file_pointer == NULL) {
@@ -15,13 +16,15 @@ Status read_file(const char *filename, FileString *output) {
     }
 
     fseek(file_pointer, 0, SEEK_END);
-    length = ftell(file_pointer);
+    file_len = ftell(file_pointer);
     fseek(file_pointer, 0, SEEK_SET);
 
-    if (length < 0) {
+    if (file_len < 0) {
         fclose(file_pointer);
         return READ_ERROR;
     }
+
+    length = (size_t) file_len;
 
     buffer = (char*) malloc(sizeof(char) * (length+1));
     if (buffer == NULL) {

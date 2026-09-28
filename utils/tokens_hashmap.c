@@ -112,7 +112,7 @@ Status insert_item(TokensHashMap *hashmap, const char *string, const size_t stri
     size_t target_index = hash_result % hashmap->capacity;
     size_t hash_offset = 0;
 
-    if (hashmap->count + 1 >= hashmap->capacity * 0.6) {
+    if ((hashmap->count + 1) * 5 >= hashmap->capacity * 3) {
        reallocation_status = rehash_hashmap(hashmap, hashmap->capacity*2);
        if (reallocation_status != NO_ERROR) {
            return reallocation_status;
@@ -169,7 +169,7 @@ TokenStatus lookup_item(TokensHashMap *hashmap, const char *string, const size_t
 
     while (hashmap->slots[target_index].hash != 0) {
         target_slot = &hashmap->slots[target_index];
-        symbol_id = target_slot->symbol_id;
+        symbol_id = (uint32_t) target_slot->symbol_id;
 
         stored_string = string_vector->start_pointer + symbol_vector->array[symbol_id].string_index;
         stored_length = symbol_vector->array[symbol_id].string_length;

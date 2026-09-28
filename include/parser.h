@@ -4,7 +4,7 @@
 #include "file_loader.h"
 #include "status.h"
 
-Status setup_parser();
+Status setup_parser(void);
 Status start_parser(FileString *file_string);
 
 #endif

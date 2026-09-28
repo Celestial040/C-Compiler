@@ -2,7 +2,7 @@
 #include "status.h"
 #include "file_loader.h"
 
-int main() {
+int main(void) {
     Status status = NO_ERROR;
     FileString loaded_file_string;
 

@@ -5,6 +5,7 @@
 #include "tokens_hashmap.h"
 #include "lexer.h"
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include "parser.h"
@@ -13,7 +14,7 @@ static StringVector parser_string_vector;
 static SymbolVector parser_symbol_vector;
 static TokensHashMap parser_tokens_hashmap;
 
-Status seed_keyword() {
+Status seed_keyword(void) {
 
     Status hashmap_insertion_status;
     SymbolEntryPointer symbol_insertion_status;
@@ -35,7 +36,7 @@ Status seed_keyword() {
     token_semantic.token_type = TOKEN_KEYWORD;
 
     for (i = 0; i < 32; i++) {
-        token_semantic.sub_token_type = i;
+        token_semantic.sub_token_type = (uint8_t) i;
 
         symbol_insertion_status = insert_symbol(&parser_symbol_vector, keyword_strings[i], keyword_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
@@ -51,7 +52,7 @@ Status seed_keyword() {
     return NO_ERROR;
 }
 
-Status seed_operator() {
+Status seed_operator(void) {
 
     Status hashmap_insertion_status;
     SymbolEntryPointer symbol_insertion_status;
@@ -74,7 +75,7 @@ Status seed_operator() {
 
 
     for (i = 0; i < 37; i++) {
-        token_semantic.sub_token_type = i;
+        token_semantic.sub_token_type = (uint8_t) i;
         symbol_insertion_status = insert_symbol(&parser_symbol_vector, operator_strings[i], operator_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
             return symbol_insertion_status.status;
@@ -90,7 +91,7 @@ Status seed_operator() {
     return NO_ERROR;
 }
 
-Status seed_punctuation() {
+Status seed_punctuation(void) {
 
     Status hashmap_insertion_status;
     SymbolEntryPointer symbol_insertion_status;
@@ -112,7 +113,7 @@ Status seed_punctuation() {
 
 
     for (i = 0; i < 11; i++) {
-        token_semantic.sub_token_type = i;
+        token_semantic.sub_token_type = (uint8_t) i;
         symbol_insertion_status = insert_symbol(&parser_symbol_vector, punctuation_strings[i], punctuation_lengths[i], token_semantic);
         if (symbol_insertion_status.status != 0 ) {
             return symbol_insertion_status.status;
@@ -129,7 +130,7 @@ Status seed_punctuation() {
 }
 
 
-Status setup_parser() {
+Status setup_parser(void) {
 
     Status allocation_status;
 
