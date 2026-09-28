@@ -1,7 +1,7 @@
-#ifndef ENUM_MEMBERS_DYNAMIC_ARRAY_H
-#define ENUM_MEMBERS_DYNAMIC_ARRAY_H
+#ifndef ENUM_MEMBERS_VECTOR_H
+#define ENUM_MEMBERS_VECTOR_H
 
-#include "status.h"
+#include "../status.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -11,11 +11,11 @@ typedef struct EnumMembers {
     int64_t value;
 } EnumMembers;
 
-typedef struct EnumMembersDynamicArray {
-    EnumMembers *entries;
+typedef struct EnumMembersVector {
+    EnumMembers *array;
     size_t count;
     size_t capacity;
-}EnumMembersDynamicArray;
+}EnumMembersVector;
 
 typedef struct EnumMembersPointer {
     size_t index;

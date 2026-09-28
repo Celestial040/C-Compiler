@@ -1,7 +1,7 @@
-#ifndef UNION_MEMBERS_DYNAMIC_ARRAY_H
-#define UNION_MEMBERS_DYNAMIC_ARRAY_H
+#ifndef UNION_MEMBERS_VECTOR_H
+#define UNION_MEMBERS_VECTOR_H
 
-#include "status.h"
+#include "../status.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -11,11 +11,11 @@ typedef struct UnionMembers {
     size_t size;
 } UnionMembers;
 
-typedef struct UnionMembersDynamicArray {
-    UnionMembers *entries;
+typedef struct UnionMembersVector {
+    UnionMembers *array;
     size_t count;
     size_t capacity;
-}UnionMembersDynamicArray;
+}UnionMembersVector;
 
 typedef struct UnionMembersPointer {
     size_t index;

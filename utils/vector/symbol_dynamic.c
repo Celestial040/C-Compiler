@@ -1,70 +1,70 @@
-#include "dynamic_array/symbol_dynamic_array.h"
+#include "vector/symbol.h"
 #include "status.h"
-#include "dynamic_array/string_dynamic_array.h"
+#include "vector/string.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-Status allocate_symbol_dynamic_array(SymbolDynamicArray *symbol_dynamic_array, StringDynamicArray *string_dynamic_array, size_t size_requested) {
-    SymbolEntry *symbol_entries = (SymbolEntry *) malloc(sizeof(SymbolEntry) * size_requested);
-    if (symbol_entries == NULL) {
+Status allocate_symbol_vector(SymbolVector *symbol_vector, StringVector *string_vector, size_t size_requested) {
+    SymbolEntry *symbol_array = (SymbolEntry *) malloc(sizeof(SymbolEntry) * size_requested);
+    if (symbol_array == NULL) {
         return ALLOCATION_ERROR;
     }
 
-    symbol_dynamic_array->capacity = size_requested;
-    symbol_dynamic_array->entries = symbol_entries;
-    symbol_dynamic_array->count = 0;
-    symbol_dynamic_array->string_dynamic_array = string_dynamic_array;
+    symbol_vector->capacity = size_requested;
+    symbol_vector->array = symbol_array;
+    symbol_vector->count = 0;
+    symbol_vector->string_vector = string_vector;
 
     return NO_ERROR;
 }
 
-Status reallocate_symbol_dynamic_array(SymbolDynamicArray *symbol_dynamic_array, size_t size_requested) {
-    SymbolEntry *temp = realloc(symbol_dynamic_array->entries, sizeof(SymbolEntry) * size_requested);
+Status reallocate_symbol_vector(SymbolVector *symbol_vector, size_t size_requested) {
+    SymbolEntry *temp = realloc(symbol_vector->array, sizeof(SymbolEntry) * size_requested);
     if (temp == NULL) {
         return ALLOCATION_ERROR;
     }
 
-    symbol_dynamic_array->entries = temp;
-    symbol_dynamic_array->capacity = size_requested;
+    symbol_vector->array = temp;
+    symbol_vector->capacity = size_requested;
     return NO_ERROR;
 }
 
-SymbolEntryPointer insert_symbol(SymbolDynamicArray *symbol_dynamic_array, const char *string, const size_t string_len, Semantic token_semantic) {
+SymbolEntryPointer insert_symbol(SymbolVector *symbol_vector, const char *string, const size_t string_len, Semantic token_semantic) {
     SymbolEntryPointer return_pointer = {NO_ERROR, 0};
-    StringDynamicArrayPointer string_pointer;
+    StringVectorPointer string_pointer;
 
-    if (symbol_dynamic_array->count + 1 >= symbol_dynamic_array->capacity) {
-        Status reallocation_status = reallocate_symbol_dynamic_array(symbol_dynamic_array, symbol_dynamic_array->capacity*2);
+    if (symbol_vector->count + 1 >= symbol_vector->capacity) {
+        Status reallocation_status = reallocate_symbol_vector(symbol_vector, symbol_vector->capacity*2);
         if (reallocation_status != NO_ERROR) {
             return_pointer.status = reallocation_status;
             return return_pointer;
         }
     }
 
-    return_pointer.symbol_id = symbol_dynamic_array->count;
-    string_pointer = insert_string(symbol_dynamic_array->string_dynamic_array, string, string_len);
-    symbol_dynamic_array->entries[symbol_dynamic_array->count].string_index = string_pointer.string_start;
-    symbol_dynamic_array->entries[symbol_dynamic_array->count].string_length = string_pointer.string_length;
-    symbol_dynamic_array->entries[symbol_dynamic_array->count].semantic = token_semantic;
+    return_pointer.symbol_id = symbol_vector->count;
+    string_pointer = insert_string(symbol_vector->string_vector, string, string_len);
+    symbol_vector->array[symbol_vector->count].string_index = string_pointer.string_start;
+    symbol_vector->array[symbol_vector->count].string_length = string_pointer.string_length;
+    symbol_vector->array[symbol_vector->count].semantic = token_semantic;
 
-    symbol_dynamic_array->count++;
+    symbol_vector->count++;
 
     return return_pointer;
 }
 
 
-Status free_symbol_dynamic_array(SymbolDynamicArray *symbol_dynamic_array) {
-    if (symbol_dynamic_array->entries == NULL || symbol_dynamic_array->capacity == 0) {
+Status free_symbol_vector(SymbolVector *symbol_vector) {
+    if (symbol_vector->array == NULL || symbol_vector->capacity == 0) {
         return NULL_POINTER;
     }
 
-    free(symbol_dynamic_array->entries);
-    free_string_dynamic_array(symbol_dynamic_array->string_dynamic_array);
-    symbol_dynamic_array->entries = NULL;
-    symbol_dynamic_array->string_dynamic_array = NULL;
-    symbol_dynamic_array->capacity = 0;
-    symbol_dynamic_array->count = 0;
+    free(symbol_vector->array);
+    free_string_vector(symbol_vector->string_vector);
+    symbol_vector->array = NULL;
+    symbol_vector->string_vector = NULL;
+    symbol_vector->capacity = 0;
+    symbol_vector->count = 0;
 
     return NO_ERROR;
 }

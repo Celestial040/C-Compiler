@@ -1,8 +1,8 @@
-#ifndef SYMBOL_DYNAMIC_ARRAY_H
-#define SYMBOL_DYNAMIC_ARRAY_H
+#ifndef SYMBOL_VECTOR_H
+#define SYMBOL_VECTOR_H
 
-#include "status.h"
-#include "dynamic_array/string_dynamic_array.h"
+#include "../status.h"
+#include "string.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -167,12 +167,12 @@ typedef struct SymbolEntry {
     Semantic semantic;
 } SymbolEntry;
 
-typedef struct SymbolDynamicArray {
-    SymbolEntry *entries;
+typedef struct SymbolVector {
+    SymbolEntry *array;
     size_t count;
     size_t capacity;
-    StringDynamicArray *string_dynamic_array;
-} SymbolDynamicArray;
+    StringVector *string_vector;
+} SymbolVector;
 
 typedef struct SymbolEntryPointer {
     size_t symbol_id;
@@ -186,9 +186,9 @@ typedef struct TokenStatus {
 
 
 
-Status allocate_symbol_dynamic_array(SymbolDynamicArray *symbol_dynamic_array, StringDynamicArray *string_dynamic_array, size_t size_requested);
-SymbolEntryPointer insert_symbol(SymbolDynamicArray *symbol_dynamic_array, const char *string, const size_t string_len, Semantic token_semantic);
-Status free_symbol_dynamic_array(SymbolDynamicArray *symbol_dynamic_array);
+Status allocate_symbol_vector(SymbolVector *symbol_vector, StringVector *string_vector, size_t size_requested);
+SymbolEntryPointer insert_symbol(SymbolVector *symbol_vector, const char *string, const size_t string_len, Semantic token_semantic);
+Status free_symbol_vector(SymbolVector *symbol_vector);
 
 void print_token(Token token);
 

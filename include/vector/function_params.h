@@ -1,7 +1,7 @@
-#ifndef FUNCTION_PARAMS_DYNAMIC_ARRAY_H
-#define FUNCTION_PARAMS_DYNAMIC_ARRAY_H
+#ifndef FUNCTION_PARAMS_VECTOR_H
+#define FUNCTION_PARAMS_VECTOR_H
 
-#include "status.h"
+#include "../status.h"
 #include <stddef.h>
 
 
@@ -10,11 +10,11 @@ typedef struct FunctionParams {
     size_t size;
 } FunctionParams;
 
-typedef struct FunctionParamsDynamicArray {
-    FunctionParams *entries;
+typedef struct FunctionParamsVector {
+    FunctionParams *array;
     size_t count;
     size_t capacity;
-}FunctionParamsDynamicArray;
+}FunctionParamsVector;
 
 typedef struct FunctionParamsPointer {
     size_t index;

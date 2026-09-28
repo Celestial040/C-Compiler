@@ -1,7 +1,7 @@
-#ifndef STRUCT_MEMBERS_DYNAMIC_ARRAY_H
-#define STRUCT_MEMBERS_DYNAMIC_ARRAY_H
+#ifndef STRUCT_MEMBERS_VECTOR_H
+#define STRUCT_MEMBERS_VECTOR_H
 
-#include "status.h"
+#include "../status.h"
 #include <stddef.h>
 
 typedef struct StructMembers {
@@ -9,11 +9,11 @@ typedef struct StructMembers {
     size_t size;
 } StructMembers;
 
-typedef struct StructMembersDynamicArray{
-    StructMembers *entries;
+typedef struct StructMembersVector{
+    StructMembers *array;
     size_t count;
     size_t capacity;
-}StructMembersDynamicArray;
+}StructMembersVector;
 
 typedef struct StructMembersPointer {
     size_t index;

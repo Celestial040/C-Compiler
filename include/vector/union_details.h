@@ -1,7 +1,7 @@
-#ifndef UNION_DETAILS_DYNAMIC_ARRAY_H
-#define UNION_DETAILS_DYNAMIC_ARRAY_H
+#ifndef UNION_DETAILS_VECTOR_H
+#define UNION_DETAILS_VECTOR_H
 
-#include "status.h"
+#include "../status.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -12,17 +12,15 @@ typedef struct UnionDetails {
     size_t total_size;
 } UnionDetails;
 
-typedef struct UnionDetailsDynamicArray {
-    UnionDetails *entries;
+typedef struct UnionDetailsVector {
+    UnionDetails *array;
     size_t count;
     size_t capacity;
-}UnionDetailsDynamicArray;
+}UnionDetailsVector;
 
 typedef struct UnionDetailsPointer {
     size_t index;
     Status status;
 }UnionDetailsPointer;
-
-
 
 #endif

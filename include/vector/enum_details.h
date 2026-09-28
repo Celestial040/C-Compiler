@@ -1,7 +1,7 @@
-#ifndef ENUM_DETAILS_DYNAMIC_ARRAY_H
-#define ENUM_DETAILS_DYNAMIC_ARRAY_H
+#ifndef ENUM_DETAILS_VECTOR_H
+#define ENUM_DETAILS_VECTOR_H
 
-#include "status.h"
+#include "../status.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -11,11 +11,11 @@ typedef struct EnumDetails {
     size_t member_count;
 } EnumDetails;
 
-typedef struct EnumDetailsDynamicArray {
-    EnumDetails *entries;
+typedef struct EnumDetailsVector {
+    EnumDetails *array;
     size_t count;
     size_t capacity;
-}EnumDetailsDynamicArray;
+}EnumDetailsVector;
 
 typedef struct EnumDetailsPointer {
     size_t index;

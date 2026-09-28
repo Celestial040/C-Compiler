@@ -1,7 +1,7 @@
-#ifndef VARIABLES_DYNAMIC_ARRAY_H
-#define VARIABLES_DYNAMIC_ARRAY_H
+#ifndef VARIABLES_VECTOR_H
+#define VARIABLES_VECTOR_H
 
-#include "status.h"
+#include "../status.h"
 #include <stddef.h>
 
 typedef struct VariableDetails {
@@ -9,11 +9,11 @@ typedef struct VariableDetails {
     size_t size;
 } VariableDetails;
 
-typedef struct VariableDynamicArray {
-    VariableDetails *entries;
+typedef struct VariableVector {
+    VariableDetails *array;
     size_t count;
     size_t capacity;
-}VariableDynamicArray;
+}VariableVector;
 
 typedef struct VariableEntryPointer {
     size_t index;
