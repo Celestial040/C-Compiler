@@ -1,1 +1,3 @@
-SPDX-License-Identifier: GPL-3.0-or-later
+## License
+
+This project is licensed under the GNU General Public License v3.0 or later.
